@@ -18,7 +18,8 @@ export interface HistoryProps {
     isFromMe: (activity: Activity) => boolean,
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
-    doCardAction: IDoCardAction
+    doCardAction: IDoCardAction,
+    avatar?: string
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -119,6 +120,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
             } else {
                 content = this.props.activities.map((activity, index) =>
                     <WrappedActivity
+                        avatar={this.props.avatar}
                         format={ this.props.format }
                         key={ 'message' + index }
                         activity={ activity }
@@ -190,7 +192,8 @@ export const History = connect(
         doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.format.locale, dispatchProps.sendMessage),
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
-        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity }))
+        onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
+        avatar: ownProps.avatar
     })
 )(HistoryView);
 
@@ -223,7 +226,8 @@ export interface WrappedActivityProps {
     fromMe: boolean,
     format: FormatState,
     onClickActivity: React.MouseEventHandler<HTMLDivElement>,
-    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>
+    onClickRetry: React.MouseEventHandler<HTMLAnchorElement>,
+    avatar?: string
 }
 
 export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
@@ -274,6 +278,9 @@ export class WrappedActivity extends React.Component<WrappedActivityProps, {}> {
         return (
             <div data-activity-id={ this.props.activity.id } className={ wrapperClassName } onClick={ this.props.onClickActivity }>
                 <div className={ 'wc-message wc-message-from-' + who } ref={ div => this.messageDiv = div }>
+                    {who === 'bot' && this.props.avatar &&
+                        <img src={this.props.avatar} className='wc-message-bot-avatar' />
+                    }
                     <div className={ contentClassName }>
                         <svg className="wc-message-callout">
                             <path className="point-left" d="m0,6 l6 6 v-12 z" />

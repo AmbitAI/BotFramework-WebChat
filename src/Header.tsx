@@ -9,7 +9,9 @@ interface Props {
     dispatchAction: (action: ChatActions) => void,
     sendMessage: (inputText: string) => void,
     actions?: Array<MenuAction>,
-    title: string
+    title: string,
+    headerText?: string,
+    customHeaderToolbox?: React.ReactNode
 }
 
 interface State {
@@ -52,11 +54,14 @@ class HeaderContainer extends React.Component<Props, State> {
         ))}
       </div>
       : <span/>
+
+    const title = this.props.headerText ? this.props.headerText : this.props.title;
     return (
       <div className="wc-header">
-        <span>{ this.props.title }</span>
+        <span>{ title }</span>
         {menuIcon}
         {menu}
+        {this.props.customHeaderToolbox}
       </div>
     )
   }
@@ -73,10 +78,13 @@ export const Header = connect(
         dispatchAction: action => (action as ChatActions),
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
+        
         // from dispatchProps
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         dispatchAction: dispatchProps.dispatchAction,
         title: stateProps.title,
-        actions: ownProps.actions
+        actions: ownProps.actions,
+        headerText: ownProps.headerText,
+        customHeaderToolbox: ownProps.customHeaderToolbox
     })
 )(HeaderContainer);

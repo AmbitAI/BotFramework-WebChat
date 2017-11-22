@@ -37,7 +37,10 @@ export interface ChatProps {
     sendTyping?: boolean,
     formatOptions?: FormatOptions,
     resize?: 'none' | 'window' | 'detect',
-    menuActions?: Array<MenuAction>;
+    menuActions?: Array<MenuAction>,
+    headerText?: string,
+    customHeaderToolbox?: React.ReactNode,
+    avatar?: string,
 }
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
@@ -207,7 +210,11 @@ export class Chat extends React.Component<ChatProps, {}> {
 
         // only render real stuff after we know our dimensions
         let header: JSX.Element;
-        if (state.format.options.showHeader) header = <Header actions={this.props.menuActions}/>;
+
+        if (state.format.options.showHeader) header = <Header 
+            customHeaderToolbox={this.props.customHeaderToolbox}
+            headerText={this.props.headerText} 
+            actions={this.props.menuActions}/>;
 
         let resize: JSX.Element;
         if (this.props.resize === 'detect') resize =
@@ -218,7 +225,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                 <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
                     { header }
                     <MessagePane setFocus={ () => this.setFocus() }>
-                        <History setFocus={ () => this.setFocus() }/>
+                        <History avatar={this.props.avatar} setFocus={ () => this.setFocus() }/>
                     </MessagePane>
                     <Shell />
                     { resize }
