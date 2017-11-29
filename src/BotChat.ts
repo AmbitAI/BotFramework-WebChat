@@ -4,6 +4,8 @@ export * from 'botframework-directlinejs';
 export { queryParams } from './Attachment';
 export { SpeechOptions } from './SpeechOptions'
 export { Speech } from './SpeechModule'
+export { ChatWindow } from './ChatWindow';
+
 // below are shims for compatibility with old browsers (IE 10 being the main culprit)
 import 'core-js/modules/es6.string.starts-with';
 import 'core-js/modules/es6.array.find';
