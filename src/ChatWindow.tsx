@@ -23,6 +23,7 @@ export interface Bot {
 }
 
 export interface ChatWindowProps {
+  tooltipImage: string,
   tooltipText: string,
   initiallyOpen: boolean,
   avatar: string,
@@ -47,7 +48,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
   }
   render() {
     const { isMinimised } = this.state;
-    const { botName, headerText, avatar, webchatSecret, user, bot, tooltipText } = this.props;
+    const { botName, headerText, avatar, webchatSecret, user, bot, tooltipText, tooltipImage } = this.props;
 
     const customHeaderToolbox = (
       <div 
@@ -73,6 +74,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
         </div>
         {isMinimised &&
           <Launcher 
+            tooltipImage={tooltipImage}
             tooltipText={tooltipText}
             onLaunch={this.toggleMinimised} />
         }

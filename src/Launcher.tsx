@@ -9,6 +9,7 @@ const ChatIcon = ({ onClick }) => (
 );
 
 export interface ChatWindowProps {
+  tooltipImage: string,
   tooltipText: string,
   onLaunch: () => void
 }
@@ -61,16 +62,19 @@ export class Launcher extends React.Component<ChatWindowProps, State> {
   }
   render() {
     const { showTooltip } = this.state;
-    const { tooltipText } = this.props;
+    const { tooltipText, tooltipImage } = this.props;
     return (
       <div className='webchat-launcher'>
-        {showTooltip &&
+        {Boolean((tooltipImage || tooltipText) && showTooltip) &&
           <div 
             onClick={this.launchWebchat}
             onMouseEnter={this.tooltipMouseEnter} 
             onMouseLeave={this.tooltipMouseLeave}
             className='webchat-launcher-tooltip-wrapper'>
             <div className="webchat-launcher-tooltip">
+              {tooltipImage &&
+                <img className="webchat-launcher-tooltip-image" src={tooltipImage} alt='' />
+              }
               <span>{tooltipText}</span>
             </div>
           </div>
