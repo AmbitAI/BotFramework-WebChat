@@ -18,20 +18,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Bot Chat</title>
-
-    <link href="../../botchat.css" rel="stylesheet" />
-
     <style>
-      .wc-chatview-panel {
-        height: 800px;
-        position: relative;
-        width: 620px;
+
+      html, body {
+        font-family: 'Source Sans Pro', sans-serif;
       }
     </style>
 
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://unpkg.com/react@15/dist/react.min.js"></script>
     <script src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">    
+    <link href="../../chatwindow.css" rel="stylesheet" />
   </head>
   <body>
     <div id="BotChatGoesHere"></div>
@@ -44,25 +42,15 @@
       window.botchatDebug = params.debug && params.debug === 'true';
 
       ReactDOM.render(
-        <BotChat.Chat
-          bot={{
-            id: params.botid || 'botid',
-            name: params.botname || 'botname'
-          }}
-          directLine={{
-            domain: params.domain,
-            secret: params.s,
-            token: params.t,
-            webSocket: params.webSocket && params.webSocket === 'true' // defaults to true
-          }}
-          locale={ params.locale }
-          resize="detect"
-          // sendTyping={ true }    // defaults to false. set to true to send 'typing' activities to bot (and other users) when user is typing
-          user={{
-            id: params.userid || 'userid',
-            name: params.username || 'username'
-          }}
-        />,
+        <BotChat.ChatWindow 
+          tooltipText='Chat with Bit'
+          initiallyOpen={false}
+          bot={{ id: 'botId', name: 'botName' }}
+          user={{ id: 'user.userId', name: 'user.userName' }}
+          webchatSecret=''
+          avatar='http://ambithub.com/wp-content/uploads/2017/04/cropped-Icon-300x300.png'
+          headerText='Chat header' 
+          botName='Bit' />,
         document.getElementById('BotChatGoesHere')
       );
     </script>
