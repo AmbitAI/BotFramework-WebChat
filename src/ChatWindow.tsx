@@ -8,7 +8,7 @@ const MinimiseIcon = () => (
   </svg>
 );
 
-interface State {
+export interface State {
   isMinimised: boolean
 }
 

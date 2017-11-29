@@ -1,7 +1,7 @@
 import * as React from 'react';
 
-const ChatIcon = ({ onClick }) => (
-  <div onClick={onClick} className='webchat-icon-wrapper'>
+const ChatIcon = (params: any) => (
+  <div onClick={params.onClick} className='webchat-icon-wrapper'>
     <svg viewBox="0 0 24 24">
       <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
     </svg>
@@ -14,7 +14,7 @@ export interface ChatWindowProps {
   onLaunch: () => void
 }
 
-interface State {
+export interface State {
   showTooltip: boolean
 }
 
