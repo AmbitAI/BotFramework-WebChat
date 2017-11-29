@@ -83,7 +83,13 @@ export class ActivityView extends React.Component<ActivityViewProps, {}> {
                 );
 
             case 'typing':
-                return <div className="wc-typing"/>;
+                return (
+                    <div className="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                );
             default:
                 return <div/>
         }
