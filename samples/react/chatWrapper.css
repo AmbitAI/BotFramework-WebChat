@@ -1,0 +1,66 @@
+.widget-container {
+  bottom: 0;
+  position: fixed;
+  right: 0;
+  z-index: 9999;
+  height: 500px;
+  width: 300px;
+}
+
+.conversation-container {
+  height: 100%;
+}
+
+@media screen and (max-width: 800px) {
+  .widget-container {
+    height: 100%;
+    margin: 0;
+    max-width: none;
+    width: 100%; 
+  } 
+}
+
+.webchat-icon-wrapper {
+  position: fixed;
+  bottom: 10px;
+  right: 20px;  
+}
+
+.conversation-container {
+  -webkit-animation-delay: 0;
+  -webkit-animation-duration: 0.5s;
+  -webkit-animation-name: slide-in;
+  -webkit-animation-fill-mode: forwards;
+  -moz-animation-delay: 0;
+  -moz-animation-duration: 0.5s;
+  -moz-animation-name: slide-in;
+  -moz-animation-fill-mode: forwards;
+  animation-delay: 0;
+  animation-duration: 0.5s;
+  animation-name: slide-in;
+  animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px); }
+  to {
+    opacity: 1;
+    transform: translateY(0); } }
+
+@-moz-keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px); }
+  to {
+    opacity: 1;
+    transform: translateY(0); } }
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px); }
+  to {
+    opacity: 1;
+    transform: translateY(0); } }
