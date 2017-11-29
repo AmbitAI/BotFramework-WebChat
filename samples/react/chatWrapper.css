@@ -20,47 +20,42 @@
   } 
 }
 
-.webchat-icon-wrapper {
+.webchat-launcher {
   position: fixed;
   bottom: 10px;
-  right: 20px;  
+  right: 20px;    
 }
 
-.conversation-container {
-  -webkit-animation-delay: 0;
-  -webkit-animation-duration: 0.5s;
-  -webkit-animation-name: slide-in;
-  -webkit-animation-fill-mode: forwards;
-  -moz-animation-delay: 0;
-  -moz-animation-duration: 0.5s;
-  -moz-animation-name: slide-in;
-  -moz-animation-fill-mode: forwards;
-  animation-delay: 0;
-  animation-duration: 0.5s;
-  animation-name: slide-in;
-  animation-fill-mode: forwards;
+.webchat-launcher-tooltip-wrapper {
+  position: fixed;
+  bottom: 15px;
+  right: 85px; 
 }
 
-@-webkit-keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px); }
-  to {
-    opacity: 1;
-    transform: translateY(0); } }
+.webchat-launcher-tooltip {
+	position: relative;
+  background: #fff;
+  box-shadow: 2px 3px 14px 2px rgba(0,0,0,0.4);
 
-@-moz-keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px); }
-  to {
-    opacity: 1;
-    transform: translateY(0); } }
+  cursor: pointer;
+  color: #6C9EC9;
+  height: 38px;
+  line-height: 38px;
+  padding-left: 10px;
+  padding-right: 15px;
+}
 
-@keyframes slide-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px); }
-  to {
-    opacity: 1;
-    transform: translateY(0); } }
+.webchat-launcher-tooltip:after {
+	left: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(255, 255, 255, 0);
+	border-left-color: #fff;
+	border-width: 5px;
+	margin-top: -5px;
+}

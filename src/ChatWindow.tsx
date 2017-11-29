@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Chat } from './Chat';
+import { Launcher } from './Launcher';
 
 const MinimiseIcon = () => (
   <svg viewBox='0 0 20 2'>
@@ -22,6 +23,8 @@ export interface Bot {
 }
 
 export interface ChatWindowProps {
+  tooltipText: string,
+  initiallyOpen: boolean,
   avatar: string,
   webchatSecret: string,
   botName: string,
@@ -30,19 +33,11 @@ export interface ChatWindowProps {
   bot: Bot
 }
 
-const ChatIcon = ({ onClick }) => (
-  <div onClick={onClick} className='webchat-icon-wrapper'>
-    <svg viewBox="0 0 24 24">
-      <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
-    </svg>
-  </div>
-);
-
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
   constructor(props: ChatWindowProps) {
     super(props);
     this.state = {
-      isMinimised: false
+      isMinimised: !props.initiallyOpen
     };
   }
   toggleMinimised = () => {
@@ -52,7 +47,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
   }
   render() {
     const { isMinimised } = this.state;
-    const { botName, headerText, avatar, webchatSecret, user, bot } = this.props;
+    const { botName, headerText, avatar, webchatSecret, user, bot, tooltipText } = this.props;
 
     const customHeaderToolbox = (
       <div 
@@ -77,9 +72,9 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
           }
         </div>
         {isMinimised &&
-          <div>
-            <ChatIcon onClick={this.toggleMinimised} />
-          </div>
+          <Launcher 
+            tooltipText={tooltipText}
+            onLaunch={this.toggleMinimised} />
         }
       </div>
     );
