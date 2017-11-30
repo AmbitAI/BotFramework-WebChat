@@ -45,12 +45,10 @@
         <BotChat.ChatWindow 
           tooltipText='Chat with Bit'
           initiallyOpen={false}
-          bot={{ id: 'botId', name: 'botName' }}
           user={{ id: 'user.userId', name: 'user.userName' }}
-          webchatSecret=''
+          directLine={{secret: ''}}
           avatar='http://ambithub.com/wp-content/uploads/2017/04/cropped-Icon-300x300.png'
-          headerText='Chat header' 
-          botName='Bit' />,
+          headerText='Chat header' />,
         document.getElementById('BotChatGoesHere')
       );
     </script>
