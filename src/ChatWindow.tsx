@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Chat } from './Chat';
 import { Launcher } from './Launcher';
+import { DirectLineOptions } from 'botframework-directlinejs';
 
 const MinimiseIcon = () => (
   <svg viewBox='0 0 20 2'>
@@ -27,11 +28,10 @@ export interface ChatWindowProps {
   tooltipText: string,
   initiallyOpen: boolean,
   avatar: string,
-  webchatSecret: string,
-  botName: string,
   headerText: string,
   user: User,
-  bot: Bot
+  bot?: Bot,
+  directLine: DirectLineOptions
 }
 
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
@@ -48,7 +48,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
   }
   render() {
     const { isMinimised } = this.state;
-    const { botName, headerText, avatar, webchatSecret, user, bot, tooltipText, tooltipImage } = this.props;
+    const { headerText, avatar, directLine, user, bot, tooltipText, tooltipImage } = this.props;
 
     const customHeaderToolbox = (
       <div 
@@ -64,7 +64,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
           {!isMinimised &&
             <Chat 
               bot={bot}
-              directLine={{ secret: webchatSecret }}
+              directLine={directLine}
               user={user}
               avatar={avatar}
               customHeaderToolbox={customHeaderToolbox}
