@@ -58,19 +58,18 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       </div>
     );
 
+    const conversationContainerStyles = isMinimised ? {visibility: 'hidden'} : {};
     return (
       <div className='widget-container'>
-        <div className='conversation-container'>
-          {!isMinimised &&
-            <Chat 
-              bot={bot}
-              directLine={directLine}
-              user={user}
-              avatar={avatar}
-              customHeaderToolbox={customHeaderToolbox}
-              headerText={headerText}       
-            />        
-          }
+        <div className='conversation-container' style={conversationContainerStyles}>   
+          <Chat 
+            bot={bot}
+            directLine={directLine}
+            user={user}
+            avatar={avatar}
+            customHeaderToolbox={customHeaderToolbox}
+            headerText={headerText}       
+          />
         </div>
         {isMinimised &&
           <Launcher 
