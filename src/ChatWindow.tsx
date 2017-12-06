@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Chat } from './Chat';
 import { Launcher } from './Launcher';
 import { DirectLineOptions } from 'botframework-directlinejs';
+import { sendMessage, MenuAction } from './Chat';
 
 const MinimiseIcon = () => (
   <svg viewBox='0 0 20 2'>
@@ -31,7 +32,9 @@ export interface ChatWindowProps {
   headerText: string,
   user: User,
   bot?: Bot,
-  directLine: DirectLineOptions
+  directLine: DirectLineOptions,
+  customHeaderElement?: React.ReactNode,
+  menuActions?: Array<MenuAction>,
 }
 
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
@@ -41,33 +44,63 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       isMinimised: !props.initiallyOpen
     };
   }
+  sendMessage = (message) => {
+    const { dispatch, getState } = this.chatRef.store;
+    const state = getState();
+
+    const locale = state.format.locale;
+    const user = state.connection.user;
+
+    dispatch(
+      sendMessage(message, user, locale)
+    );
+  }
   toggleMinimised = () => {
     this.setState({
       isMinimised: !this.state.isMinimised
     });
   }
+  setRef = (ref) => {
+    this.chatRef = ref;
+  }
   render() {
     const { isMinimised } = this.state;
-    const { headerText, avatar, directLine, user, bot, tooltipText, tooltipImage } = this.props;
-
+    const { 
+      headerText, 
+      avatar, 
+      directLine, 
+      user, 
+      bot, 
+      tooltipText, 
+      tooltipImage, 
+      customHeaderElement, 
+      menuActions 
+    } = this.props;
+    
     const customHeaderToolbox = (
-      <div 
-        style={{width: 20, height: 20, cursor: 'pointer'}} 
-        onClick={this.toggleMinimised}>
-        <MinimiseIcon />
+      <div className='chat-window-custom-elements'>
+        {customHeaderElement}
+        <div 
+          className='chat-window-custom-elements-minimise'
+          onClick={this.toggleMinimised}>
+          <MinimiseIcon />
+        </div>
       </div>
     );
 
     const conversationContainerStyles = isMinimised ? {visibility: 'hidden'} : {};
+
     return (
       <div className='widget-container'>
         <div className='conversation-container' style={conversationContainerStyles}>   
           <Chat 
+            customHeaderToolbox={customHeaderToolbox}
+            menuActions={menuActions}
+            ref={this.setRef}
             bot={bot}
             directLine={directLine}
             user={user}
             avatar={avatar}
-            customHeaderToolbox={customHeaderToolbox}
             headerText={headerText}       
           />
         </div>

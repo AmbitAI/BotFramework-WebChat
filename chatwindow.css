@@ -41,10 +41,10 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   box-sizing: content-box;
   color: #ffffff;
   font-weight: 500;
-  height: 30px;
+  /* height: 30px; */
   left: 0;
   letter-spacing: 0.5px;
-  padding: 8px 8px 0 8px;
+  /* padding: 8px 8px 0 8px; */
   position: absolute;
   right: 0;
   top: 0;
@@ -622,11 +622,13 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 
 .wc-header {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   background-color: #fff;
   color: #768288;
   padding-left: 15px;
-  padding-right: 25px;
+  height: 38px;
+  padding-left: 8px;
+  padding-right: 4px;
 }
 
 .minimize-icon {
@@ -752,4 +754,29 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   margin-right: 5px;
   vertical-align: middle;
   margin-bottom: 4px;
+}
+
+.chat-window-custom-elements {
+  display: flex;
+}
+
+.chat-window-custom-elements-minimise {
+  width: 20px; 
+  height: 20px; 
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.wc-send svg {
+  fill: #333;
+}
+
+.headerTitle {
+  flex: 1;
+}
+
+.wc-header .wc-menu {
+  position: absolute;
+  top: 32px;
+  right: 10px;
 }
