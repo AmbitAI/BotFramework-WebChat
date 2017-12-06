@@ -38,13 +38,14 @@ export interface ChatWindowProps {
 }
 
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
+  private chatRef: any;
   constructor(props: ChatWindowProps) {
     super(props);
     this.state = {
       isMinimised: !props.initiallyOpen
     };
   }
-  sendMessage = (message) => {
+  sendMessage = (message: string) => {
     const { dispatch, getState } = this.chatRef.store;
     const state = getState();
 
@@ -60,7 +61,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       isMinimised: !this.state.isMinimised
     });
   }
-  setRef = (ref) => {
+  setRef = (ref: any) => {
     this.chatRef = ref;
   }
   render() {
