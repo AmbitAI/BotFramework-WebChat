@@ -42,16 +42,26 @@
       window.botchatDebug = params.debug && params.debug === 'true';
 
       class ChatWindowWrapper extends React.Component {
+        componentDidMount() {
+          this.ref.sendMessage('Hello');
+        }
         setRef = (ref) => {
           this.ref = ref;
         }
         reset = () => {
           const message = '/reset';
-          this.ref.sendMessage(message);
+        }
+        open = () => {
+          this.ref.open();
+        }
+        close = () => {
+          this.ref.close();
         }
         render() {
           return (
             <div>
+              <button onClick={this.open}>OPEN</button>
+              <button onClick={this.close}>CLOSE</button>
               <BotChat.ChatWindow 
                 ref={this.setRef}
                 menuActions={[
