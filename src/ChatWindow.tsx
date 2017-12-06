@@ -56,14 +56,19 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       sendMessage(message, user, locale)
     );
   }
-  toggleMinimised = () => {
+  setRef = (ref: any) => { 
+    this.chatRef = ref; 
+  }
+  open = () => {
     this.setState({
-      isMinimised: !this.state.isMinimised
+      isMinimised: false
     });
   }
-  setRef = (ref: any) => {
-    this.chatRef = ref;
-  }
+  close = () => {
+    this.setState({
+      isMinimised: true
+    });
+  }  
   render() {
     const { isMinimised } = this.state;
     const { 
@@ -83,7 +88,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
         {customHeaderElement}
         <div 
           className='chat-window-custom-elements-minimise'
-          onClick={this.toggleMinimised}>
+          onClick={this.close}>
           <MinimiseIcon />
         </div>
       </div>
@@ -109,7 +114,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
           <Launcher 
             tooltipImage={tooltipImage}
             tooltipText={tooltipText}
-            onLaunch={this.toggleMinimised} />
+            onLaunch={this.open} />
         }
       </div>
     );
