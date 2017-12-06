@@ -1,3 +1,12 @@
+.conversation-container .wc-carousel .wc-hscroll > ul {
+  margin: 0;
+  padding: 0;
+}
+
+.conversation-container .wc-message-wrapper.carousel .wc-message-bot-avatar {
+  display: none;
+}
+
 /* reset */
 body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   font-family: "Segoe UI", sans-serif;
