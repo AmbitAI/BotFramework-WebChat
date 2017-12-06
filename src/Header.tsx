@@ -58,10 +58,10 @@ class HeaderContainer extends React.Component<Props, State> {
     const title = this.props.headerText ? this.props.headerText : this.props.title;
     return (
       <div className="wc-header">
-        <span>{ title }</span>
+        <span className='headerTitle'>{ title }</span>
+        {this.props.customHeaderToolbox}
         {menuIcon}
         {menu}
-        {this.props.customHeaderToolbox}
       </div>
     )
   }
