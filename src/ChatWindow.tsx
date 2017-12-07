@@ -94,11 +94,11 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       </div>
     );
 
-    const conversationContainerStyles = isMinimised ? {visibility: 'hidden'} : {};
+    const conversationContainerClassName = isMinimised ? 'conversation-container conversation-container-minimised' : 'conversation-container';
 
     return (
       <div className='widget-container'>
-        <div className='conversation-container' style={conversationContainerStyles}>   
+        <div className={conversationContainerClassName}>   
           <Chat 
             customHeaderToolbox={customHeaderToolbox}
             menuActions={menuActions}

@@ -783,3 +783,11 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   top: 32px;
   right: 10px;
 }
+
+.conversation-container-minimised {
+  visibility: hidden;
+}
+
+.conversation-container-minimised .wc-header .wc-menu {
+  display: none;
+}
