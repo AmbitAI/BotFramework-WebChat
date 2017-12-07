@@ -35,7 +35,8 @@ export interface ChatWindowProps {
   directLine: DirectLineOptions,
   customHeaderElement?: React.ReactNode,
   menuActions?: Array<MenuAction>,
-  disableUpload?: boolean
+  disableUpload?: boolean,
+  onMount?: any
 }
 
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
@@ -45,6 +46,15 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
     this.state = {
       isMinimised: !props.initiallyOpen
     };
+  }
+  componentDidMount() {
+    if(this.props.onMount) {
+      this.props.onMount({
+        sendMessage: this.sendMessage,
+        open: this.open,
+        close: this.close
+      });
+    }
   }
   sendMessage = (message: string) => {
     const { dispatch, getState } = this.chatRef.store;
