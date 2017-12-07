@@ -16,7 +16,8 @@ interface Props {
     sendMessage: (inputText: string) => void,
     sendFiles: (files: FileList) => void,
     stopListening: () => void,
-    startListening: () => void
+    startListening: () => void,
+    disableUpload?: boolean
 }
 
 class ShellContainer extends React.Component<Props, {}> {
@@ -64,7 +65,8 @@ class ShellContainer extends React.Component<Props, {}> {
     }
 
     render() {
-        let className = 'wc-console';
+        const { disableUpload } = this.props;
+        let className = disableUpload ? 'wc-console wc-console-upload-disabled' : 'wc-console';
         if (this.props.inputText.length > 0) className += ' has-text';
 
         const showMicButton = this.props.listening || (Speech.SpeechRecognizer.speechIsAvailable()  && !this.props.inputText.length);
@@ -81,14 +83,18 @@ class ShellContainer extends React.Component<Props, {}> {
             !this.props.listening && 'inactive',
         );
 
+        
+
         return (
             <div className={className}>
-                <input id="wc-upload-input" type="file" ref={ input => this.fileInput = input } multiple onChange={ () => this.onChangeFile() } />
-                <label className="wc-upload" htmlFor="wc-upload-input">
-                    <svg>
-                        <path d="M19.96 4.79m-2 0a2 2 0 0 1 4 0 2 2 0 0 1-4 0zM8.32 4.19L2.5 15.53 22.45 15.53 17.46 8.56 14.42 11.18 8.32 4.19ZM1.04 1L1.04 17 24.96 17 24.96 1 1.04 1ZM1.03 0L24.96 0C25.54 0 26 0.45 26 0.99L26 17.01C26 17.55 25.53 18 24.96 18L1.03 18C0.46 18 0 17.55 0 17.01L0 0.99C0 0.45 0.47 0 1.03 0Z" />
-                    </svg>
-                </label>
+                {!this.props.disableUpload && [
+                    <input key={1} id="wc-upload-input" type="file" ref={ input => this.fileInput = input } multiple onChange={ () => this.onChangeFile() } />,
+                    <label key={2} className="wc-upload" htmlFor="wc-upload-input">
+                        <svg>
+                            <path d="M19.96 4.79m-2 0a2 2 0 0 1 4 0 2 2 0 0 1-4 0zM8.32 4.19L2.5 15.53 22.45 15.53 17.46 8.56 14.42 11.18 8.32 4.19ZM1.04 1L1.04 17 24.96 17 24.96 1 1.04 1ZM1.03 0L24.96 0C25.54 0 26 0.45 26 0.99L26 17.01C26 17.55 25.53 18 24.96 18L1.03 18C0.46 18 0 17.55 0 17.01L0 0.99C0 0.45 0.47 0 1.03 0Z" />
+                        </svg>
+                    </label>
+                ]}
                 <div className="wc-textbox">
                     <input
                         type="text"
@@ -148,6 +154,7 @@ export const Shell = connect(
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
-        stopListening: () => dispatchProps.stopListening()
+        stopListening: () => dispatchProps.stopListening(),
+        disableUpload: ownProps.disableUpload
     })
 )(ShellContainer);

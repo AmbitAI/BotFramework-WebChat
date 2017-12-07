@@ -791,3 +791,8 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 .conversation-container-minimised .wc-header .wc-menu {
   display: none;
 }
+
+.wc-console-upload-disabled .wc-textbox {
+  left: 0px;
+  padding-left: 10px;
+}
