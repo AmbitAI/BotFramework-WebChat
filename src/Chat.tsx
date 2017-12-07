@@ -41,6 +41,7 @@ export interface ChatProps {
     headerText?: string,
     customHeaderToolbox?: React.ReactNode,
     avatar?: string,
+    disableUpload?: boolean
 }
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
@@ -227,7 +228,7 @@ export class Chat extends React.Component<ChatProps, {}> {
                     <MessagePane setFocus={ () => this.setFocus() }>
                         <History avatar={this.props.avatar} setFocus={ () => this.setFocus() }/>
                     </MessagePane>
-                    <Shell />
+                    <Shell disableUpload={this.props.disableUpload} />
                     { resize }
                 </div>
             </Provider>

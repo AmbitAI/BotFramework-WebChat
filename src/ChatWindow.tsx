@@ -35,6 +35,7 @@ export interface ChatWindowProps {
   directLine: DirectLineOptions,
   customHeaderElement?: React.ReactNode,
   menuActions?: Array<MenuAction>,
+  disableUpload?: boolean
 }
 
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
@@ -80,7 +81,8 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       tooltipText, 
       tooltipImage, 
       customHeaderElement, 
-      menuActions 
+      menuActions,
+      disableUpload
     } = this.props;
     
     const customHeaderToolbox = (
@@ -100,6 +102,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       <div className='widget-container'>
         <div className={conversationContainerClassName}>   
           <Chat 
+            disableUpload={disableUpload}
             customHeaderToolbox={customHeaderToolbox}
             menuActions={menuActions}
             ref={this.setRef}
