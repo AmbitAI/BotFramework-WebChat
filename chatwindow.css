@@ -701,6 +701,7 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   position: fixed;
   bottom: 0;
   right: 0;
+  z-index: 40;
 }
 
 .conversation-container .conversation-container-minimised {
