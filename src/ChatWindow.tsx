@@ -113,6 +113,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       <div className='widget-container'>
         <div className={conversationContainerClassName}>   
           <Chat 
+            sendTyping={true}
             disableUpload={disableUpload}
             customHeaderToolbox={customHeaderToolbox}
             menuActions={menuActions}
