@@ -100,7 +100,8 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
         {customHeaderElement}
         <div 
           className='chat-window-custom-elements-minimise'
-          onClick={this.close}>
+          onMouseDown={this.close}
+          onTouchStart={this.close}>
           <MinimiseIcon />
         </div>
       </div>
