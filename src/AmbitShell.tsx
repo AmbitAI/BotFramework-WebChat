@@ -115,7 +115,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
         isOnFirstScreen: true
       });    
     }
-    render() {        
+    render() {
         const { persistentMenuItems } = this.props;
         const { isOnFirstScreen } = this.state;
         
@@ -409,7 +409,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
                     onResize={this.onResize}
                     onChange={this.onChange} />
             </div>
-            {!isPersistentMenuOpen && message.length === 0 &&
+            {!isPersistentMenuOpen && message.length === 0 && persistentMenuItems.length > 0 &&
                 <div 
                     onClick={this.persistentMenuIconClick} 
                     style={rightIconBaseStyles}>
@@ -452,7 +452,13 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
                     message={inputText}
                     onSendMessage={sendMessage}
                     onChangeMessage={onChangeText}
-                    persistentMenuItems={[]}
+                    persistentMenuItems={[
+                        {onClick: () => console.log('Link One clicked'), title: 'Link One'},
+                        {onClick: () => console.log('Link Two clicked'), title: 'Link Two'},
+                        {onClick: () => console.log('Link Three clicked'), title: 'Link Three'},
+                        {onClick: () => console.log('Link Four clicked'), title: 'Link Four'},
+                        {onClick: () => console.log('Link Five clicked'), title: 'Link Five'},        
+                    ]}
                     onHeightChange={(height) => {
                         console.log('onHeightChange', height);
                     }}
