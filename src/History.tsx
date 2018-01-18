@@ -19,7 +19,9 @@ export interface HistoryProps {
     isSelected: (activity: Activity) => boolean,
     onClickActivity: (activity: Activity) => React.MouseEventHandler<HTMLDivElement>,
     doCardAction: IDoCardAction,
-    avatar?: string
+    avatar?: string,
+    isPersistentMenuOpen: boolean,
+    shellHeight: number
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -151,7 +153,10 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
         const groupsClassName = classList('wc-message-groups', !this.props.format.options.showHeader && 'no-header');
 
         return (
-            <div className={ groupsClassName } ref={ div => this.scrollMe = div || this.scrollMe }>
+            <div 
+                style={{bottom: this.props.shellHeight}}
+                className={ groupsClassName } 
+                ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
                     { content }
                 </div>
@@ -162,6 +167,8 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
 export const History = connect(
     (state: ChatState) => ({
+        shellHeight: state.shell.height,
+
         // passed down to HistoryView
         format: state.format,
         size: state.size,
@@ -178,6 +185,7 @@ export const History = connect(
         // only used to create helper functions below 
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
+        shellHeight: stateProps.shellHeight,
         // from stateProps
         format: stateProps.format,
         size: stateProps.size,
@@ -193,7 +201,8 @@ export const History = connect(
         isFromMe: (activity: Activity) => activity.from.id === stateProps.user.id,
         isSelected: (activity: Activity) => activity === stateProps.selectedActivity,
         onClickActivity: (activity: Activity) => stateProps.connectionSelectedActivity && (() => stateProps.connectionSelectedActivity.next({ activity })),
-        avatar: ownProps.avatar
+        avatar: ownProps.avatar,
+        isPersistentMenuOpen: ownProps.isPersistentMenuOpen
     })
 )(HistoryView);
 

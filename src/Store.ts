@@ -52,7 +52,7 @@ export const shell: Reducer<ShellState> = (
         sendTyping: false,
         listening : false,
         lastInputViaSpeech : false,
-        height: 60
+        height: 50
     },
     action: ShellAction
 ) => {

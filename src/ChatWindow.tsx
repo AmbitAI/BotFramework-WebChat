@@ -3,6 +3,7 @@ import { Chat } from './Chat';
 import { Launcher } from './Launcher';
 import { DirectLineOptions } from 'botframework-directlinejs';
 import { sendMessage, MenuAction } from './Chat';
+import { PeristentMenuItem } from './AmbitShell';
 
 const MinimiseIcon = () => (
   <svg viewBox='0 0 20 2'>
@@ -36,10 +37,15 @@ export interface ChatWindowProps {
   customHeaderElement?: React.ReactNode,
   menuActions?: Array<MenuAction>,
   disableUpload?: boolean,
-  onMount?: any
+  onMount?: any,
+  shellPlaceholderText?: string,
+  persistentMenuItems: Array<PeristentMenuItem>,
 }
 
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
+  static defaultProps = {
+    persistentMenuItems: []
+  }
   private chatRef: any;
   constructor(props: ChatWindowProps) {
     super(props);
@@ -92,7 +98,9 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       tooltipImage, 
       customHeaderElement, 
       menuActions,
-      disableUpload
+      disableUpload,
+      shellPlaceholderText,
+      persistentMenuItems
     } = this.props;
     
     const customHeaderToolbox = (
@@ -110,27 +118,31 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
     const conversationContainerClassName = isMinimised ? 'conversation-container conversation-container-minimised' : 'conversation-container';
 
     return (
-      <div className='widget-container'>
-        <div className={conversationContainerClassName}>   
-          <Chat 
-            sendTyping={true}
-            disableUpload={disableUpload}
-            customHeaderToolbox={customHeaderToolbox}
-            menuActions={menuActions}
-            ref={this.setRef}
-            bot={bot}
-            directLine={directLine}
-            user={user}
-            avatar={avatar}
-            headerText={headerText}       
-          />
+      <div>
+        <div className='widget-container'>
+          <div className={conversationContainerClassName}>   
+            <Chat 
+              persistentMenuItems={persistentMenuItems}
+              shellPlaceholderText={shellPlaceholderText}
+              sendTyping={true}
+              disableUpload={disableUpload}
+              customHeaderToolbox={customHeaderToolbox}
+              menuActions={menuActions}
+              ref={this.setRef}
+              bot={bot}
+              directLine={directLine}
+              user={user}
+              avatar={avatar}
+              headerText={headerText}       
+            />
+          </div>
+          {isMinimised &&
+            <Launcher 
+              tooltipImage={tooltipImage}
+              tooltipText={tooltipText}
+              onLaunch={this.open} />
+          }
         </div>
-        {isMinimised &&
-          <Launcher 
-            tooltipImage={tooltipImage}
-            tooltipText={tooltipText}
-            onLaunch={this.open} />
-        }
       </div>
     );
   }

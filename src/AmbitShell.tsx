@@ -15,9 +15,11 @@ interface ShellContainerProps {
     sendFiles: (files: FileList) => void,
     stopListening: () => void,
     startListening: () => void,
-    disableUpload?: boolean,
+    showUpload?: boolean,
     shellHeightChanged: (height: number) => void,
-    shellHeight: number
+    shellHeight: number,
+    shellPlaceholderText?: string,
+    persistentMenuItems: Array<PeristentMenuItem>
 }
 
 export interface PeristentMenuItem {
@@ -33,7 +35,8 @@ export interface ChatShellProps {
     onSendMessage: (message: string) => void,
     onChangeMessage: (message: string) => void,
     onHeightChange: (message: number) => void,
-    height: number
+    height: number,
+    shellPlaceholderText?: string
 }
 
 export interface PersistentMenuProps {
@@ -275,6 +278,9 @@ class ExpandingTextarea extends React.Component<ExpandingTextareaProps> {
 const textAreaWrapperPadding = 10;
  
 class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
+    static defaultProps = {
+        shellPlaceholderText: 'Type a message...'
+    }
     private fileInput: HTMLInputElement;
     private textarea: HTMLTextAreaElement;
     constructor(props: ChatShellProps) {
@@ -335,101 +341,103 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
         this.fileInput.value = null;
     }
     render() {
-      const { isPersistentMenuOpen } = this.state;
-      const { 
-        height, 
-        persistentMenuItems, 
-        message,
-        showUpload
-      } = this.props;
+        const { isPersistentMenuOpen } = this.state;
+        const { 
+            height, 
+            persistentMenuItems, 
+            message,
+            showUpload,
+            shellPlaceholderText
+        } = this.props;
       
-    const outerWrapperStyles = {
-        border: '1px solid #eee',
-        borderBottomLeftRadius: 8,
-        borderBottomRightRadius: 8
-    };
+        const outerWrapperStyles = {
+            border: '1px solid #eee',
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8
+        };
 
-    const inputRowWrapperStyles = {
-        height,
-        display: 'flex',
-        alignItems: 'center',
-        background: '#fff'
-    };
+        const inputRowWrapperStyles = {
+            height,
+            display: 'flex',
+            alignItems: 'center',
+            background: '#fff'
+        };
 
-    const textWrapperStyles = {
-        cursor: 'text',
-        flex: 1, 
-        display: 'flex',
-        alignItems: 'center',
-        height: '100%',
-    };
+        const textWrapperStyles = {
+            cursor: 'text',
+            flex: 1, 
+            display: 'flex',
+            alignItems: 'center',
+            height: '100%',
+        };
 
-    // we don't want the text area full height because we want the placeholder vertically center aligned
-    const textAreaStyles = {
-        outline: 'none',
-        border: 'none',
-        flex: 1,
-        resize: 'none'
-    };
+        // we don't want the text area full height because we want the placeholder vertically center aligned
+        const textAreaStyles = {
+            outline: 'none',
+            border: 'none',
+            flex: 1,
+            resize: 'none',
+            marginLeft: 10
+        };
 
-    const rightIconBaseStyles = {
-        cursor: 'pointer', 
-        height: 20, 
-        width: 20, 
-        marginLeft: 6, 
-        marginRight: 15
-    };
-  
-      return (
-        <div style={outerWrapperStyles}>
-          <div style={inputRowWrapperStyles}>
-            {showUpload &&
-                <div 
-                    style={{cursor: 'pointer', height: 20, width: 20, marginLeft: 10, marginRight: 6}}>
-                    <input 
-                        id="ambit-shell-upload-input" 
-                        type="file" 
-                        style={{display: 'none'}}
-                        ref={input => this.fileInput = input} 
-                        multiple 
-                        onChange={this.onChangeFile} />
-                    <label htmlFor="ambit-shell-upload-input">
-                        <AttachIcon />  
-                    </label>
-              </div>          
-            }
-            <div 
-                onMouseDown={this.textWrapperClick}
-                style={textWrapperStyles}>
-                <ExpandingTextarea               
-                    innerRef={ref => this.textarea = ref}
-                    value={message}
-                    onFocus={this.handleTextAreaFocus}
-                    onKeyDown={this.textAreaKeydown}
-                    style={textAreaStyles}
-                    placeholder='Type a message for Bit...'
-                    onResize={this.onResize}
-                    onChange={this.onChange} />
+        const rightIconBaseStyles = {
+            cursor: 'pointer', 
+            height: 20, 
+            width: 20, 
+            marginLeft: 6, 
+            marginRight: 15
+        };
+    
+        return (
+            <div style={outerWrapperStyles}>
+                <div style={inputRowWrapperStyles}>
+                    {showUpload &&
+                        <div 
+                            style={{cursor: 'pointer', height: 20, width: 20, marginLeft: 10}}>
+                            <input 
+                                id="ambit-shell-upload-input" 
+                                type="file" 
+                                style={{display: 'none'}}
+                                ref={input => this.fileInput = input} 
+                                multiple 
+                                onChange={this.onChangeFile} />
+                            <label htmlFor="ambit-shell-upload-input">
+                                <AttachIcon />  
+                            </label>
+                    </div>          
+                    }
+                    <div 
+                        onMouseDown={this.textWrapperClick}
+                        style={textWrapperStyles}>
+                        <ExpandingTextarea               
+                            innerRef={ref => this.textarea = ref}
+                            value={message}
+                            onFocus={this.handleTextAreaFocus}
+                            onKeyDown={this.textAreaKeydown}
+                            style={textAreaStyles}
+                            placeholder={shellPlaceholderText}
+                            onResize={this.onResize}
+                            onChange={this.onChange} />
+                    </div>
+                    {!isPersistentMenuOpen && message.length === 0 && persistentMenuItems.length > 0 &&
+                        <div 
+                            onClick={this.persistentMenuIconClick} 
+                            style={rightIconBaseStyles}>
+                            <MenuIcon />
+                        </div>
+                    }
+                    {message.length > 0 &&
+                        <div onClick={this.sendIconClick} style={rightIconBaseStyles}>
+                            <SendIcon />
+                        </div>
+                    }
+                </div>
+                {isPersistentMenuOpen && 
+                    <PersistentMenu 
+                        persistentMenuItems={persistentMenuItems} />
+                }        
             </div>
-            {!isPersistentMenuOpen && message.length === 0 && persistentMenuItems.length > 0 &&
-                <div 
-                    onClick={this.persistentMenuIconClick} 
-                    style={rightIconBaseStyles}>
-                    <MenuIcon />
-                </div>
-            }
-            {message.length > 0 &&
-                <div onClick={this.sendIconClick} style={rightIconBaseStyles}>
-                    <SendIcon />
-                </div>
-            }
-          </div>
-            {isPersistentMenuOpen && 
-                <PersistentMenu 
-                    persistentMenuItems={persistentMenuItems} />
-            }        
-        </div>
-      );
+        );
     }
 }
 
@@ -437,32 +445,27 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
 
     render() {
         const { 
-            disableUpload,
+            showUpload,
             inputText,
             sendMessage,
             onChangeText,
             sendFiles,
             shellHeightChanged,
-            shellHeight
+            shellHeight,
+            shellPlaceholderText,
+            persistentMenuItems
         } = this.props;
-
-        // console.log("AMBIT SHELL!!", this.props);    
 
         return (
             <div style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
                 <ChatShell 
+                    shellPlaceholderText={shellPlaceholderText}
                     onSendFiles={sendFiles}
-                    showUpload={true}
+                    showUpload={showUpload}
                     message={inputText}
                     onSendMessage={sendMessage}
                     onChangeMessage={onChangeText}
-                    persistentMenuItems={[
-                        {onClick: () => console.log('Link One clicked'), title: 'Link One'},
-                        {onClick: () => console.log('Link Two clicked'), title: 'Link Two'},
-                        {onClick: () => console.log('Link Three clicked'), title: 'Link Three'},
-                        {onClick: () => console.log('Link Four clicked'), title: 'Link Four'},
-                        {onClick: () => console.log('Link Five clicked'), title: 'Link Five'},        
-                    ]}
+                    persistentMenuItems={persistentMenuItems}
                     onHeightChange={shellHeightChanged}
                     height={shellHeight} />
             </div>
@@ -491,6 +494,7 @@ export const AmbitShell = connect(
         sendMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
+        persistentMenuItems: ownProps.persistentMenuItems,
         // from stateProps
         shellHeight: stateProps.shellHeight,
         inputText: stateProps.inputText,
@@ -504,6 +508,7 @@ export const AmbitShell = connect(
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening(),
-        disableUpload: ownProps.disableUpload
+        showUpload: ownProps.showUpload,
+        shellPlaceholderText: ownProps.shellPlaceholderText
     })
 )(ShellContainer);

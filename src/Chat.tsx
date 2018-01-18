@@ -9,7 +9,7 @@ import { createStore, ChatActions } from './Store';
 import { Provider } from 'react-redux';
 import { SpeechOptions } from './SpeechOptions';
 import { Speech } from './SpeechModule';
-
+import { PeristentMenuItem } from './AmbitShell';
 import * as request from 'superagent';
 
 export interface FormatOptions {
@@ -41,7 +41,9 @@ export interface ChatProps {
     headerText?: string,
     customHeaderToolbox?: React.ReactNode,
     avatar?: string,
-    disableUpload?: boolean
+    disableUpload?: boolean,
+    shellPlaceholderText?: string,
+    persistentMenuItems: Array<PeristentMenuItem>
 }
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
@@ -77,8 +79,13 @@ import { History } from './History';
 import { MessagePane } from './MessagePane';
 import { Shell } from './Shell';
 import { Header } from './Header';
+import { AmbitShell } from './AmbitShell';
 
-export class Chat extends React.Component<ChatProps, {}> {
+export interface State {
+    isPersistentMenuOpen: boolean
+}
+
+export class Chat extends React.Component<ChatProps, State> {
 
     private store = createStore();
 
@@ -111,6 +118,10 @@ export class Chat extends React.Component<ChatProps, {}> {
             Speech.SpeechRecognizer.setSpeechRecognizer(props.speechOptions.speechRecognizer);
             Speech.SpeechSynthesizer.setSpeechSynthesizer(props.speechOptions.speechSynthesizer);
         }
+
+        this.state = {
+            isPersistentMenuOpen: false
+        };
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -136,6 +147,10 @@ export class Chat extends React.Component<ChatProps, {}> {
     }
 
     componentDidMount() {
+        setTimeout(() => {
+            this.setState({isPersistentMenuOpen: true});
+        }, 1000);
+        
         // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
         this.setSize();
 
@@ -209,6 +224,8 @@ export class Chat extends React.Component<ChatProps, {}> {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
 
+        const { isPersistentMenuOpen } = this.state;
+
         // only render real stuff after we know our dimensions
         let header: JSX.Element;
 
@@ -221,14 +238,25 @@ export class Chat extends React.Component<ChatProps, {}> {
         if (this.props.resize === 'detect') resize =
             <ResizeDetector onresize={ this.resizeListener } />;
 
+        const panelClassName = isPersistentMenuOpen ? 
+            "wc-chatview-panel persistent-menu-open" :
+            "wc-chatview-panel";
+
         return (
             <Provider store={ this.store }>
-                <div className="wc-chatview-panel" ref={ div => this.chatviewPanel = div }>
+                <div className={panelClassName} ref={ div => this.chatviewPanel = div }>
                     { header }
                     <MessagePane setFocus={ () => this.setFocus() }>
-                        <History avatar={this.props.avatar} setFocus={ () => this.setFocus() }/>
+                        <History 
+                            isPersistentMenuOpen={isPersistentMenuOpen}
+                            avatar={this.props.avatar} 
+                            setFocus={ () => this.setFocus() } />
                     </MessagePane>
-                    <Shell disableUpload={this.props.disableUpload} />
+                    <AmbitShell 
+                        persistentMenuItems={this.props.persistentMenuItems}
+                        shellPlaceholderText={this.props.shellPlaceholderText}
+                        isPersistentMenuOpen={isPersistentMenuOpen}
+                        showUpload={!this.props.disableUpload} />                    
                     { resize }
                 </div>
             </Provider>
