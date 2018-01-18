@@ -10,9 +10,7 @@ interface ShellContainerProps {
     inputText: string,
     strings: Strings,
     listening: boolean,
-
     onChangeText: (inputText: string) => void
-
     sendMessage: (inputText: string) => void,
     sendFiles: (files: FileList) => void,
     stopListening: () => void,
@@ -102,8 +100,8 @@ const MenuIcon = (props: any) => (
     </svg>
 );
   
-  // persistent menu can have upto 5 items
-  class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenuState> {
+// persistent menu can have upto 5 items
+class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenuState> {
     state = {
       isOnFirstScreen: true
     };
@@ -117,7 +115,7 @@ const MenuIcon = (props: any) => (
         isOnFirstScreen: true
       });    
     }
-    render() {
+    render() {        
         const { persistentMenuItems } = this.props;
         const { isOnFirstScreen } = this.state;
         
@@ -167,51 +165,51 @@ const MenuIcon = (props: any) => (
         };
   
         return (
-        <div style={{background: '#fff', height, position: 'relative', overflow: 'hidden'}}>
-          <div className='persistentMenuScreenOne' style={firstScreenStyles}>
-            {firstScreenItems.map((item, index) =>
-              <div 
-                key={index} 
-                onClick={item.onClick}
-                style={persistMenuItemStyles}>
-                {item.title}
-              </div>
-            )}
-            {showFirstScreenMore &&
-              <div 
-                onClick={this.onFirstScreenMoreClick}
-                style={{...persistMenuItemStyles, justifyContent: 'space-between'}}>
-                <span>More!</span> 
-                <div style={{height: 20, width: 20}}>
-                  <ChevronRightIcon />
+            <div style={{background: '#fff', height, position: 'relative', overflow: 'hidden'}}>
+                <div className='persistentMenuScreenOne' style={firstScreenStyles}>
+                {firstScreenItems.map((item, index) =>
+                    <div 
+                        key={index} 
+                        onClick={item.onClick}
+                        style={persistMenuItemStyles}>
+                        {item.title}
+                    </div>
+                )}
+                {showFirstScreenMore &&
+                <div 
+                    onClick={this.onFirstScreenMoreClick}
+                    style={{...persistMenuItemStyles, justifyContent: 'space-between'}}>
+                    <span>More!</span> 
+                    <div style={{height: 20, width: 20}}>
+                        <ChevronRightIcon />
+                    </div>
                 </div>
-              </div>
-            }
-          </div>
-          <div
-            onClick={() => console.log('clicked on screen two')}
-            className='persistentMenuScreenTwo' 
-            style={secondScreenStyles}>
-            <div 
-              onClick={this.onSecondScreenMoreClick}
-              style={{...persistMenuItemStyles, justifyContent: 'space-between', background: '#EDEDED'}}>
-              <div style={{height: 20, width: 20}}>
-                <ChevronLeftIcon />
-              </div>
-              <strong style={{marginRight: '50%'}}>More</strong>
+                }
             </div>
-            {secondScreenItems.map((item, index) =>
-              <div 
-                key={index} 
-                style={persistMenuItemStyles}>
-                {item.title}
-              </div>
-            )}
-          </div>        
+            <div
+                onClick={() => console.log('clicked on screen two')}
+                className='persistentMenuScreenTwo' 
+                style={secondScreenStyles}>
+                <div 
+                    onClick={this.onSecondScreenMoreClick}
+                    style={{...persistMenuItemStyles, justifyContent: 'space-between', background: '#EDEDED'}}>
+                    <div style={{height: 20, width: 20}}>
+                    <ChevronLeftIcon />
+                    </div>
+                    <strong style={{marginRight: '50%'}}>More</strong>
+                </div>
+                {secondScreenItems.map((item, index) =>
+                    <div 
+                        key={index} 
+                        style={persistMenuItemStyles}>
+                        {item.title}
+                    </div>
+                )}
+            </div>        
         </div>
       );
     }
-  }
+}
   
 export interface ExpandingTextareaProps {
     onChange: (e: any) => void,
@@ -237,11 +235,11 @@ class ExpandingTextarea extends React.Component<ExpandingTextareaProps> {
         this.adjustTextareaHeight()
     }
     adjustTextareaHeight() {
-        this.el.style.height = 0;
+        this.el.style.height = '0px';
         this.el.style.height = `${this.el.scrollHeight}px`;
 
         this.props.onResize(
-        this.el.scrollHeight
+            this.el.scrollHeight
         );
     }
     setRef = (ref: any) => {
@@ -266,7 +264,7 @@ class ExpandingTextarea extends React.Component<ExpandingTextareaProps> {
                 style={style}
                 placeholder={placeholder}
                 ref={this.setRef}
-                onChange={ this.handleChange.bind(this) }
+                onChange={this.handleChange}
             />
         );
     }
@@ -278,61 +276,61 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     private fileInput: HTMLInputElement;
     private textarea: HTMLTextAreaElement;
     constructor(props: ChatShellProps) {
-      super(props);
-      this.state = {
-        isPersistentMenuOpen: false,
-        initialHeight: props.height
-      };
+        super(props);
+        this.state = {
+            isPersistentMenuOpen: false,
+            initialHeight: props.height
+        };
     }
     onResize = (textAreaHeight: number) => {
-      const height = Math.max(
-        this.state.initialHeight,
-        textAreaHeight + textAreaWrapperPadding
-      );
+        const height = Math.max(
+            this.state.initialHeight,
+            textAreaHeight + textAreaWrapperPadding
+        );
   
-    //   this.props.onHeightChange(height);
+        this.props.onHeightChange(height);
     }
     onChange = (e: any) => {
-      this.props.onChangeMessage(
-        e.target.value
-      );
+        this.props.onChangeMessage(
+            e.target.value
+        );
     }
     sendIconClick = () => {
-      this.sendMessage();
+        this.sendMessage();
     }
     sendMessage = () => {
-      this.props.onSendMessage(
-        this.props.message
-      );
+        this.props.onSendMessage(
+            this.props.message
+        );
     }
     textAreaKeydown = (e: any) => {
-      if(e.keyCode === 13 && !e.shiftKey) {
-        e.preventDefault();
-        this.sendMessage();
-  
-        this.textarea.style.height = '17px';
-  
-        this.props.onHeightChange(this.state.initialHeight);
-      }
+        if(e.keyCode === 13 && !e.shiftKey) {
+            e.preventDefault();
+            this.sendMessage();
+    
+            this.textarea.style.height = '17px';
+    
+            this.props.onHeightChange(this.state.initialHeight);
+        }
     }
     persistentMenuIconClick = () => {
-      this.setState({
-        isPersistentMenuOpen: true
-      });
+        this.setState({
+            isPersistentMenuOpen: true
+        });
     }
     handleTextAreaFocus = () => {
-      this.setState({
-        isPersistentMenuOpen: false
-      });
+        this.setState({
+            isPersistentMenuOpen: false
+        });
     }
     textWrapperClick = () => {
-      setTimeout(() => {
-        this.textarea.focus();
-      });
+        setTimeout(() => {
+            this.textarea.focus();
+        });
     }
     onChangeFile = (files: any) => {
-      this.props.onSendFiles(this.fileInput.files);
-      this.fileInput.value = null;
+        this.props.onSendFiles(this.fileInput.files);
+        this.fileInput.value = null;
     }
     render() {
       const { isPersistentMenuOpen } = this.state;
@@ -384,50 +382,50 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
         <div style={outerWrapperStyles}>
           <div style={inputRowWrapperStyles}>
             {showUpload &&
-              <div 
-                style={{cursor: 'pointer', height: 20, width: 20, marginLeft: 10, marginRight: 6}}>
-                <input 
-                  id="ambit-shell-upload-input" 
-                  type="file" 
-                  style={{display: 'none'}}
-                  ref={input => this.fileInput = input} 
-                  multiple 
-                  onChange={this.onChangeFile} />
-                <label htmlFor="ambit-shell-upload-input">
-                  <AttachIcon />  
-                </label>
+                <div 
+                    style={{cursor: 'pointer', height: 20, width: 20, marginLeft: 10, marginRight: 6}}>
+                    <input 
+                        id="ambit-shell-upload-input" 
+                        type="file" 
+                        style={{display: 'none'}}
+                        ref={input => this.fileInput = input} 
+                        multiple 
+                        onChange={this.onChangeFile} />
+                    <label htmlFor="ambit-shell-upload-input">
+                        <AttachIcon />  
+                    </label>
               </div>          
             }
             <div 
-              onMouseDown={this.textWrapperClick}
-              style={textWrapperStyles}>
-              <ExpandingTextarea               
-                innerRef={ref => this.textarea = ref}
-                value={message}
-                onFocus={this.handleTextAreaFocus}
-                onKeyDown={this.textAreaKeydown}
-                style={textAreaStyles}
-                placeholder='Type a message for Bit...'
-                onResize={this.onResize}
-                onChange={this.onChange} />
+                onMouseDown={this.textWrapperClick}
+                style={textWrapperStyles}>
+                <ExpandingTextarea               
+                    innerRef={ref => this.textarea = ref}
+                    value={message}
+                    onFocus={this.handleTextAreaFocus}
+                    onKeyDown={this.textAreaKeydown}
+                    style={textAreaStyles}
+                    placeholder='Type a message for Bit...'
+                    onResize={this.onResize}
+                    onChange={this.onChange} />
             </div>
             {!isPersistentMenuOpen && message.length === 0 &&
-              <div 
-                onClick={this.persistentMenuIconClick} 
-                style={rightIconBaseStyles}>
-                <MenuIcon />
-              </div>
+                <div 
+                    onClick={this.persistentMenuIconClick} 
+                    style={rightIconBaseStyles}>
+                    <MenuIcon />
+                </div>
             }
             {message.length > 0 &&
-              <div onClick={this.sendIconClick} style={rightIconBaseStyles}>
-                <SendIcon />
-              </div>
+                <div onClick={this.sendIconClick} style={rightIconBaseStyles}>
+                    <SendIcon />
+                </div>
             }
           </div>
-          {isPersistentMenuOpen && 
-            <PersistentMenu 
-              persistentMenuItems={persistentMenuItems} />
-          }        
+            {isPersistentMenuOpen && 
+                <PersistentMenu 
+                    persistentMenuItems={persistentMenuItems} />
+            }        
         </div>
       );
     }
@@ -443,7 +441,6 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
             onChangeText,
             sendFiles
         } = this.props;
-
 
         // console.log("AMBIT SHELL!!", this.props);    
 
