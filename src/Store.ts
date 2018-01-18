@@ -12,7 +12,8 @@ export interface ShellState {
     sendTyping: boolean
     input: string
     listening: boolean
-    lastInputViaSpeech : boolean
+    lastInputViaSpeech : boolean,
+    height: number
 }
 
 export type ShellAction = {
@@ -40,6 +41,9 @@ export type ShellAction = {
     ssml: string,
     locale: string
     autoListenAfterSpeak: boolean
+}| {
+    type: 'Shell_Height_Changed',
+    height: number
 }
 
 export const shell: Reducer<ShellState> = (
@@ -47,11 +51,17 @@ export const shell: Reducer<ShellState> = (
         input: '',
         sendTyping: false,
         listening : false,
-        lastInputViaSpeech : false
+        lastInputViaSpeech : false,
+        height: 60
     },
     action: ShellAction
 ) => {
     switch (action.type) {
+        case 'Shell_Height_Changed':
+            return {
+                ...state,
+                height: action.height
+            };
         case 'Update_Input':
             return {
                 ... state,

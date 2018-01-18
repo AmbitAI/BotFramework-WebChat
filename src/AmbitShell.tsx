@@ -15,7 +15,9 @@ interface ShellContainerProps {
     sendFiles: (files: FileList) => void,
     stopListening: () => void,
     startListening: () => void,
-    disableUpload?: boolean
+    disableUpload?: boolean,
+    shellHeightChanged: (height: number) => void,
+    shellHeight: number
 }
 
 export interface PeristentMenuItem {
@@ -439,7 +441,9 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
             inputText,
             sendMessage,
             onChangeText,
-            sendFiles
+            sendFiles,
+            shellHeightChanged,
+            shellHeight
         } = this.props;
 
         // console.log("AMBIT SHELL!!", this.props);    
@@ -459,10 +463,8 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
                         {onClick: () => console.log('Link Four clicked'), title: 'Link Four'},
                         {onClick: () => console.log('Link Five clicked'), title: 'Link Five'},        
                     ]}
-                    onHeightChange={(height) => {
-                        console.log('onHeightChange', height);
-                    }}
-                    height={60} />
+                    onHeightChange={shellHeightChanged}
+                    height={shellHeight} />
             </div>
         );
     }
@@ -476,23 +478,28 @@ export const AmbitShell = connect(
         // only used to create helper functions below
         locale: state.format.locale,
         user: state.connection.user,
-        listening : state.shell.listening
+        listening : state.shell.listening,
+        shellHeight: state.shell.height
     }), {
         // passed down to ShellContainer
         onChangeText: (input: string) => ({ type: 'Update_Input', input, source: "text" } as ChatActions),
         stopListening:  () => ({ type: 'Listening_Stop' }),
         startListening:  () => ({ type: 'Listening_Starting' }),
+        shellHeightChanged: (height) => ({ type: 'Shell_Height_Changed', height }),
+        
         // only used to create helper functions below
         sendMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         // from stateProps
+        shellHeight: stateProps.shellHeight,
         inputText: stateProps.inputText,
         strings: stateProps.strings,
         listening : stateProps.listening,
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions
+        shellHeightChanged: (height: number) => dispatchProps.shellHeightChanged(height),
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
