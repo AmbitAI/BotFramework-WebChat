@@ -804,3 +804,18 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   left: 0px;
   padding-left: 10px;
 }
+
+/* Ambit Shell */
+.ambitShellTextAreaWrapper {
+  cursor: text;
+  flex: 1; 
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.ambitShellInputRow {
+  display: flex;
+  align-items: center;
+  background: #fff;
+}

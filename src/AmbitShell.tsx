@@ -228,7 +228,6 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 }
             </div>
             <div
-                onClick={() => console.log('clicked on screen two')}
                 className='persistentMenuScreenTwo' 
                 style={secondScreenStyles}>
                 <div 
@@ -396,18 +395,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
         };
 
         const inputRowWrapperStyles = {
-            height,
-            display: 'flex',
-            alignItems: 'center',
-            background: '#fff'
-        };
-
-        const textWrapperStyles = {
-            cursor: 'text',
-            flex: 1, 
-            display: 'flex',
-            alignItems: 'center',
-            height: '100%',
+            height
         };
 
         // we don't want the text area full height because we want the placeholder vertically center aligned
@@ -429,7 +417,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     
         return (
             <div style={outerWrapperStyles}>
-                <div style={inputRowWrapperStyles}>
+                <div className='ambitShellInputRow' style={inputRowWrapperStyles}>
                     {showUpload &&
                         <div 
                             style={{cursor: 'pointer', height: 20, width: 20, marginLeft: 10}}>
@@ -446,8 +434,8 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
                         </div>          
                     }
                     <div 
-                        onMouseDown={this.textWrapperClick}
-                        style={textWrapperStyles}>
+                        className='ambitShellTextAreaWrapper'
+                        onMouseDown={this.textWrapperClick}>
                         <ExpandingTextarea               
                             innerRef={ref => this.textarea = ref}
                             value={message}
