@@ -6,6 +6,11 @@ import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { Speech } from './SpeechModule'
 
+export interface OpenPersistentMenuData {
+    screenHeight: number,
+    isFirstScreen: boolean
+}
+
 interface ShellContainerProps {
     inputText: string,
     strings: Strings,
@@ -19,7 +24,12 @@ interface ShellContainerProps {
     shellHeightChanged: (height: number) => void,
     shellHeight: number,
     shellPlaceholderText?: string,
-    persistentMenuItems: Array<PeristentMenuItem>
+    persistentMenuItems: Array<PeristentMenuItem>,
+    isPersistentMenuOpen: boolean,
+    persistentMenuHeight: number,
+    persistentMenuIsOnFirstScreen: boolean,
+    openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
+    closePersistentMenu: () => void
 }
 
 export interface PeristentMenuItem {
@@ -36,21 +46,40 @@ export interface ChatShellProps {
     onChangeMessage: (message: string) => void,
     onHeightChange: (message: number) => void,
     height: number,
-    shellPlaceholderText?: string
+    shellPlaceholderText?: string,
+    isPersistentMenuOpen: boolean,
+    persistentMenuHeight: number,
+    persistentMenuIsOnFirstScreen: boolean,
+    openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
+    closePersistentMenu: () => void
 }
 
 export interface PersistentMenuProps {
-    persistentMenuItems: Array<PeristentMenuItem>
+    persistentMenuItems: Array<PeristentMenuItem>,
+    persistentMenuHeight: number,
+    persistentMenuIsOnFirstScreen: boolean,
+    openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void
 }
 
 export interface ChatShellState {
-    initialHeight: number,
-    isPersistentMenuOpen: boolean
+    initialHeight: number
 }
 
 export interface PersistentMenuState {
     isOnFirstScreen: boolean
 }
+
+const getFirstScreenHeight = (persistentMenuItems: Array<PeristentMenuItem>) => {
+    if(persistentMenuItems.length >= 3) {
+        return 3 * MENU_ITEM_HEIGHT;    
+    }
+    
+    return persistentMenuItems.length * MENU_ITEM_HEIGHT;
+};
+
+const getSecondScreenHeight = (persistentMenuItems: Array<PeristentMenuItem>) => {
+    return (persistentMenuItems.slice(3, 5).length + 1)  * MENU_ITEM_HEIGHT;
+};
 
 const AttachIcon = () => (
     <svg
@@ -104,41 +133,48 @@ const MenuIcon = (props: any) => (
       </g>
     </svg>
 );
+
+const MENU_ITEM_HEIGHT = 40;
   
 // persistent menu can have upto 5 items
 class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenuState> {
-    state = {
-      isOnFirstScreen: true
-    };
     onFirstScreenMoreClick = () => {
-      this.setState({
-        isOnFirstScreen: false
-      });
+        const screenHeight = getSecondScreenHeight(this.props.persistentMenuItems);
+        this.props.openPersistenceMenuScreen({
+            screenHeight,
+            isFirstScreen: false
+        });
     }
     onSecondScreenMoreClick = () => {
-      this.setState({
-        isOnFirstScreen: true
-      });    
+        const screenHeight = getFirstScreenHeight(this.props.persistentMenuItems);
+        this.props.openPersistenceMenuScreen({
+            screenHeight,
+            isFirstScreen: true
+        });
     }
     render() {
-        const { persistentMenuItems } = this.props;
-        const { isOnFirstScreen } = this.state;
+        const { 
+            persistentMenuItems, 
+            persistentMenuHeight, 
+            openPersistenceMenuScreen
+        } = this.props;
+
+        const isOnFirstScreen = this.props.persistentMenuIsOnFirstScreen;
         
-        const firstScreenItems = persistentMenuItems.slice(0, 2);
-        const secondScreenItems = persistentMenuItems.slice(2, 5);
+        const showFirstScreenMore = persistentMenuItems.length > 3;
 
-        const showFirstScreenMore = Boolean(secondScreenItems.length);
+        const firstScreenItemsToTake = showFirstScreenMore ? 2 : 3
+        const firstScreenItems = persistentMenuItems.slice(0, firstScreenItemsToTake);
 
-        const firstScreenNumberItems = firstScreenItems.length + (showFirstScreenMore ? 1 : 0);
-
-        const itemHeight = 40;
-
-        const height = isOnFirstScreen ? 
-            itemHeight * firstScreenNumberItems :
-                (secondScreenItems.length + 1) * itemHeight;
+        console.log({
+            persistentMenuItems,
+            showFirstScreenMore
+        })
+        
+        const secondScreenItems = persistentMenuItems.slice(3, 5);
 
         const persistMenuItemStyles = {
-            height: itemHeight, 
+            height: MENU_ITEM_HEIGHT, 
             display: 'flex', 
             alignItems: 'center', 
             paddingLeft: 10,
@@ -170,7 +206,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
         };
   
         return (
-            <div style={{background: '#fff', height, position: 'relative', overflow: 'hidden'}}>
+            <div style={{background: '#fff', height: persistentMenuHeight, position: 'relative', overflow: 'hidden'}}>
                 <div className='persistentMenuScreenOne' style={firstScreenStyles}>
                 {firstScreenItems.map((item, index) =>
                     <div 
@@ -181,14 +217,14 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                     </div>
                 )}
                 {showFirstScreenMore &&
-                <div 
-                    onClick={this.onFirstScreenMoreClick}
-                    style={{...persistMenuItemStyles, justifyContent: 'space-between'}}>
-                    <span>More!</span> 
-                    <div style={{height: 20, width: 20}}>
-                        <ChevronRightIcon />
+                    <div 
+                        onClick={this.onFirstScreenMoreClick}
+                        style={{...persistMenuItemStyles, justifyContent: 'space-between'}}>
+                        <span>More!</span> 
+                        <div style={{height: 20, width: 20}}>
+                            <ChevronRightIcon />
+                        </div>
                     </div>
-                </div>
                 }
             </div>
             <div
@@ -286,7 +322,6 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     constructor(props: ChatShellProps) {
         super(props);
         this.state = {
-            isPersistentMenuOpen: false,
             initialHeight: props.height
         };
     }
@@ -322,14 +357,14 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
         }
     }
     persistentMenuIconClick = () => {
-        this.setState({
-            isPersistentMenuOpen: true
+        const screenHeight = getFirstScreenHeight(this.props.persistentMenuItems);
+        this.props.openPersistenceMenuScreen({
+            screenHeight,
+            isFirstScreen: true
         });
     }
     handleTextAreaFocus = () => {
-        this.setState({
-            isPersistentMenuOpen: false
-        });
+        this.props.closePersistentMenu();
     }
     textWrapperClick = () => {
         setTimeout(() => {
@@ -341,15 +376,19 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
         this.fileInput.value = null;
     }
     render() {
-        const { isPersistentMenuOpen } = this.state;
         const { 
             height, 
             persistentMenuItems, 
             message,
             showUpload,
-            shellPlaceholderText
+            shellPlaceholderText,
+            isPersistentMenuOpen,
+            persistentMenuHeight,
+            persistentMenuIsOnFirstScreen,
+            openPersistenceMenuScreen,
+            closePersistentMenu
         } = this.props;
-      
+
         const outerWrapperStyles = {
             border: '1px solid #eee',
             borderBottomLeftRadius: 8,
@@ -404,7 +443,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
                             <label htmlFor="ambit-shell-upload-input">
                                 <AttachIcon />  
                             </label>
-                    </div>          
+                        </div>          
                     }
                     <div 
                         onMouseDown={this.textWrapperClick}
@@ -433,7 +472,10 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
                     }
                 </div>
                 {isPersistentMenuOpen && 
-                    <PersistentMenu 
+                    <PersistentMenu
+                        openPersistenceMenuScreen={openPersistenceMenuScreen}
+                        persistentMenuHeight={persistentMenuHeight}
+                        persistentMenuIsOnFirstScreen={persistentMenuIsOnFirstScreen}
                         persistentMenuItems={persistentMenuItems} />
                 }        
             </div>
@@ -453,12 +495,22 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
             shellHeightChanged,
             shellHeight,
             shellPlaceholderText,
-            persistentMenuItems
+            persistentMenuItems,
+            persistentMenuHeight,
+            persistentMenuIsOnFirstScreen,
+            openPersistenceMenuScreen,
+            isPersistentMenuOpen,
+            closePersistentMenu
         } = this.props;
 
         return (
             <div style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
                 <ChatShell 
+                    closePersistentMenu={closePersistentMenu}
+                    isPersistentMenuOpen={isPersistentMenuOpen}
+                    openPersistenceMenuScreen={openPersistenceMenuScreen}
+                    persistentMenuHeight={persistentMenuHeight}
+                    persistentMenuIsOnFirstScreen={persistentMenuIsOnFirstScreen}
                     shellPlaceholderText={shellPlaceholderText}
                     onSendFiles={sendFiles}
                     showUpload={showUpload}
@@ -482,20 +534,28 @@ export const AmbitShell = connect(
         locale: state.format.locale,
         user: state.connection.user,
         listening : state.shell.listening,
-        shellHeight: state.shell.height
+        shellHeight: state.shell.height,
+        persistentMenuHeight: state.shell.persistentMenuHeight,
+        persistentMenuIsOnFirstScreen: state.shell.persistentMenuIsOnFirstScreen,
+        isPersistentMenuOpen: state.shell.isPersistentMenuOpen
     }), {
         // passed down to ShellContainer
         onChangeText: (input: string) => ({ type: 'Update_Input', input, source: "text" } as ChatActions),
         stopListening:  () => ({ type: 'Listening_Stop' }),
         startListening:  () => ({ type: 'Listening_Starting' }),
         shellHeightChanged: (height) => ({ type: 'Shell_Height_Changed', height }),
-        
+        openPersistenceMenuScreen: (data: OpenPersistentMenuData) => ({ 
+            type: 'Open_Persistent_Menu_Screen', 
+            ...data
+        }),
+        closePersistentMenu: () => ({type: 'Close_Persistent_Menu'}),
         // only used to create helper functions below
         sendMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
         persistentMenuItems: ownProps.persistentMenuItems,
         // from stateProps
+        isPersistentMenuOpen: stateProps.isPersistentMenuOpen,
         shellHeight: stateProps.shellHeight,
         inputText: stateProps.inputText,
         strings: stateProps.strings,
@@ -503,12 +563,16 @@ export const AmbitShell = connect(
         // from dispatchProps
         onChangeText: dispatchProps.onChangeText,
         // helper functions
+        closePersistentMenu: () => dispatchProps.closePersistentMenu(),
         shellHeightChanged: (height: number) => dispatchProps.shellHeightChanged(height),
         sendMessage: (text: string) => dispatchProps.sendMessage(text, stateProps.user, stateProps.locale),
         sendFiles: (files: FileList) => dispatchProps.sendFiles(files, stateProps.user, stateProps.locale),
         startListening: () => dispatchProps.startListening(),
         stopListening: () => dispatchProps.stopListening(),
+        openPersistenceMenuScreen: (data: OpenPersistentMenuData) => dispatchProps.openPersistenceMenuScreen(data),
         showUpload: ownProps.showUpload,
-        shellPlaceholderText: ownProps.shellPlaceholderText
+        shellPlaceholderText: ownProps.shellPlaceholderText,
+        persistentMenuHeight: stateProps.persistentMenuHeight,
+        persistentMenuIsOnFirstScreen: stateProps.persistentMenuIsOnFirstScreen
     })
 )(ShellContainer);

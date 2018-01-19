@@ -21,7 +21,8 @@ export interface HistoryProps {
     doCardAction: IDoCardAction,
     avatar?: string,
     isPersistentMenuOpen: boolean,
-    shellHeight: number
+    shellHeight: number,
+    persistentMenuHeight: number
 }
 
 export class HistoryView extends React.Component<HistoryProps, {}> {
@@ -152,9 +153,11 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 
         const groupsClassName = classList('wc-message-groups', !this.props.format.options.showHeader && 'no-header');
 
+        const offsetHeight = this.props.persistentMenuHeight + this.props.shellHeight;
+
         return (
             <div 
-                style={{bottom: this.props.shellHeight}}
+                style={{bottom: offsetHeight}}
                 className={ groupsClassName } 
                 ref={ div => this.scrollMe = div || this.scrollMe }>
                 <div className="wc-message-group-content" ref={ div => { if (div) this.scrollContent = div }}>
@@ -168,7 +171,7 @@ export class HistoryView extends React.Component<HistoryProps, {}> {
 export const History = connect(
     (state: ChatState) => ({
         shellHeight: state.shell.height,
-
+        persistentMenuHeight: state.shell.persistentMenuHeight,
         // passed down to HistoryView
         format: state.format,
         size: state.size,
@@ -177,7 +180,7 @@ export const History = connect(
         connectionSelectedActivity: state.connection.selectedActivity,
         selectedActivity: state.history.selectedActivity,
         botConnection: state.connection.botConnection,
-        user: state.connection.user
+        user: state.connection.user,
     }), {
         setMeasurements: (carouselMargin: number) => ({ type: 'Set_Measurements', carouselMargin }),
         onClickRetry: (activity: Activity) => ({ type: 'Send_Message_Retry', clientActivityId: activity.channelData.clientActivityId }),
@@ -185,6 +188,7 @@ export const History = connect(
         // only used to create helper functions below 
         sendMessage
     }, (stateProps: any, dispatchProps: any, ownProps: any): HistoryProps => ({
+        persistentMenuHeight: stateProps.persistentMenuHeight,
         shellHeight: stateProps.shellHeight,
         // from stateProps
         format: stateProps.format,
