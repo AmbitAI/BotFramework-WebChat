@@ -182,23 +182,12 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
             cursor: 'pointer'
         };
 
-        const baseScreenStyles = {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            transition: 'transform 400ms ease-in-out, opacity 250ms ease-in-out'
-        };
-
         const firstScreenStyles = {
-            ...baseScreenStyles,
             opacity: isOnFirstScreen ? 1 : 0,
             transform: isOnFirstScreen ? 'translateX(0px)' : 'translateX(-40px)',
         };
   
         const secondScreenStyles = {
-            ...baseScreenStyles,
             opacity: isOnFirstScreen ? 0 : 1,
             pointerEvents: isOnFirstScreen ? 'none' : 'all',
             transform: isOnFirstScreen ? `translateX(${400}px)` : 'translateX(0px)',
@@ -207,7 +196,9 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
   
         return (
             <div style={{background: '#fff', height: persistentMenuHeight, position: 'relative', overflow: 'hidden'}}>
-                <div className='persistentMenuScreenOne' style={firstScreenStyles}>
+                <div 
+                    className='persistentMenuScreen persistentMenuScreenOne' 
+                    style={firstScreenStyles}>
                 {firstScreenItems.map((item, index) =>
                     <div 
                         key={index} 
@@ -228,7 +219,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 }
             </div>
             <div
-                className='persistentMenuScreenTwo' 
+                className='persistentMenuScreen persistentMenuScreenTwo' 
                 style={secondScreenStyles}>
                 <div 
                     onClick={this.onSecondScreenMoreClick}

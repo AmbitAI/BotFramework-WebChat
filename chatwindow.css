@@ -819,3 +819,13 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   align-items: center;
   background: #fff;
 }
+
+.persistentMenuScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: transform 400ms ease-in-out, opacity 250ms ease-in-out;
+}
+
