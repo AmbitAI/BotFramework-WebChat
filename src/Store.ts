@@ -12,7 +12,11 @@ export interface ShellState {
     sendTyping: boolean
     input: string
     listening: boolean
-    lastInputViaSpeech : boolean
+    lastInputViaSpeech : boolean,
+    height: number,
+    persistentMenuHeight: number,
+    persistentMenuIsOnFirstScreen: boolean,
+    isPersistentMenuOpen: boolean
 }
 
 export type ShellAction = {
@@ -40,25 +44,58 @@ export type ShellAction = {
     ssml: string,
     locale: string
     autoListenAfterSpeak: boolean
+}| {
+    type: 'Shell_Height_Changed',
+    height: number
+} | {
+    type: 'Open_Persistent_Menu_Screen',
+    persistentMenuIsOnFirstScreen: boolean,
+    screenHeight: number,
+    isFirstScreen: boolean
+} | {
+    type: 'Close_Persistent_Menu'
 }
+
+const initialShellHeight = 50;
 
 export const shell: Reducer<ShellState> = (
     state: ShellState = {
         input: '',
         sendTyping: false,
         listening : false,
-        lastInputViaSpeech : false
+        lastInputViaSpeech : false,
+        height: initialShellHeight,
+        isPersistentMenuOpen: false,
+        persistentMenuHeight: 0,
+        persistentMenuIsOnFirstScreen: true
     },
     action: ShellAction
 ) => {
     switch (action.type) {
+        case 'Open_Persistent_Menu_Screen':
+            return {
+                ...state,
+                isPersistentMenuOpen: true,
+                persistentMenuHeight: action.screenHeight,
+                persistentMenuIsOnFirstScreen: action.isFirstScreen
+            };  
+        case 'Close_Persistent_Menu':
+            return {
+                ...state,
+                isPersistentMenuOpen: false,
+                persistentMenuHeight: 0
+            };
+        case 'Shell_Height_Changed':
+            return {
+                ...state,
+                height: action.height
+            };
         case 'Update_Input':
             return {
                 ... state,
                 input: action.input,
                 lastInputViaSpeech : action.source == "speech"
             };
-            
         case 'Listening_Start':
             return {
                 ... state,

@@ -58,20 +58,31 @@
           this.ref.close();
         }
         render() {
+          const menuActions = [
+            {
+              label: 'Reset',
+              actions: [{type: 'Clear_History'}, {type: 'Send_Message', text: '/reset'}]
+            }
+          ];
+
+          const customHeaderElement = (<button onClick={this.reset}>Reset</button>);
           return (
             <div>
               <button onClick={this.open}>OPEN</button>
               <button onClick={this.close}>CLOSE</button>
               <BotChat.ChatWindow 
-                disableUpload={true}
+                disableUpload={false}
                 ref={this.setRef}
-                menuActions={[
-                  {
-                    label: 'Reset',
-                    actions: [{type: 'Clear_History'}, {type: 'Send_Message', text: '/reset'}]
-                  }
+                menuActions={menuActions}
+                shellPlaceholderText={'Type a message for Bit...'}
+                persistentMenuItems={[
+                  {message: 'Link One clicked', title: 'Link One'},
+                  {message: 'Link Two clicked', title: 'Link Two'},
+                  {message: 'Link Three clicked', title: 'Link Three'},
+                  {message: 'Link Four clicked', title: 'Link Four'},
+                  {message: 'Link Five clicked', title: 'Link Five'},        
                 ]}
-                customHeaderElement={<button onClick={this.reset}>Reset</button>}
+                customHeaderElement={null}
                 tooltipText='Chat with Bit'
                 initiallyOpen={true} 
                 user={{ id: 'user.userddddId', name: 'user.userddddName' }} 

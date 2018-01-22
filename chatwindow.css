@@ -804,3 +804,35 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   left: 0px;
   padding-left: 10px;
 }
+
+/* Ambit Shell */
+.ambitShellTextAreaWrapper {
+  cursor: text;
+  flex: 1; 
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.ambitShellInputRow {
+  display: flex;
+  align-items: center;
+  background: #fff;
+}
+
+.persistentMenuScreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: transform 400ms ease-in-out, opacity 250ms ease-in-out;
+}
+
+.persistentMenuItem {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  border-top: 1px solid #eee;
+  cursor: pointer;
+}
