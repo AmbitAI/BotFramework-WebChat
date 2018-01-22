@@ -202,7 +202,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 )}
                 {showFirstScreenMore &&
                     <div 
-                        className='persistentMenuItem'
+                        className='persistentMenuItem persistentMenuMore'
                         onClick={this.onFirstScreenMoreClick}
                         style={{...persistMenuItemStyles, justifyContent: 'space-between'}}>
                         <span>More!</span> 
@@ -216,7 +216,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 className='persistentMenuScreen persistentMenuScreenTwo' 
                 style={secondScreenStyles}>
                 <div 
-                    className='persistentMenuItem'
+                    className='persistentMenuItem persistentMenuMore'
                     onClick={this.onSecondScreenMoreClick}
                     style={{...persistMenuItemStyles, justifyContent: 'space-between', background: '#EDEDED'}}>
                     <div style={{height: 20, width: 20}}>
@@ -353,6 +353,10 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     handleTextAreaFocus = () => {
         this.props.closePersistentMenu();
     }
+    onPersistentMenuSendMessage = (message: string) => {
+        this.props.onSendMessage(message);        
+        this.props.closePersistentMenu();
+    }
     textWrapperClick = () => {
         setTimeout(() => {
             this.textarea.focus();
@@ -450,7 +454,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
                 </div>
                 {isPersistentMenuOpen && 
                     <PersistentMenu
-                        onSendMessage={onSendMessage}
+                        onSendMessage={this.onPersistentMenuSendMessage}
                         openPersistenceMenuScreen={openPersistenceMenuScreen}
                         persistentMenuHeight={persistentMenuHeight}
                         persistentMenuIsOnFirstScreen={persistentMenuIsOnFirstScreen}
