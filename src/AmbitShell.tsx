@@ -13,7 +13,7 @@ export interface OpenPersistentMenuData {
 
 export interface PeristentMenuItem {
     title: string,
-    onClick: () => void
+    message: string
 }
 
 interface ShellContainerProps {
@@ -34,7 +34,7 @@ interface ShellContainerProps {
     persistentMenuHeight: number,
     persistentMenuIsOnFirstScreen: boolean,
     openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
-    closePersistentMenu: () => void
+    closePersistentMenu: () => void,
 }
 
 export interface ChatShellProps {
@@ -58,7 +58,8 @@ export interface PersistentMenuProps {
     persistentMenuItems: Array<PeristentMenuItem>,
     persistentMenuHeight: number,
     persistentMenuIsOnFirstScreen: boolean,
-    openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void
+    openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
+    onSendMessage: (message: string) => void
 }
 
 export interface ChatShellState {
@@ -156,7 +157,8 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
         const { 
             persistentMenuItems, 
             persistentMenuHeight, 
-            openPersistenceMenuScreen
+            openPersistenceMenuScreen,
+            onSendMessage
         } = this.props;
 
         const isOnFirstScreen = this.props.persistentMenuIsOnFirstScreen;
@@ -190,10 +192,10 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                     className='persistentMenuScreen persistentMenuScreenOne' 
                     style={firstScreenStyles}>
                 {firstScreenItems.map((item, index) =>
-                    <div 
+                    <div
+                        key={index}  
                         className='persistentMenuItem'
-                        key={index} 
-                        onClick={item.onClick}
+                        onClick={() => onSendMessage(item.message)}
                         style={persistMenuItemStyles}>
                         {item.title}
                     </div>
@@ -224,9 +226,9 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 </div>
                 {secondScreenItems.map((item, index) =>
                     <div 
-                        className='persistentMenuItem'
                         key={index} 
-                        onClick={item.onClick}
+                        className='persistentMenuItem'
+                        onClick={() => onSendMessage(item.message)}
                         style={persistMenuItemStyles}>
                         {item.title}
                     </div>
@@ -371,7 +373,8 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
             persistentMenuHeight,
             persistentMenuIsOnFirstScreen,
             openPersistenceMenuScreen,
-            closePersistentMenu
+            closePersistentMenu,
+            onSendMessage
         } = this.props;
 
         const outerWrapperStyles = {
@@ -447,6 +450,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
                 </div>
                 {isPersistentMenuOpen && 
                     <PersistentMenu
+                        onSendMessage={onSendMessage}
                         openPersistenceMenuScreen={openPersistenceMenuScreen}
                         persistentMenuHeight={persistentMenuHeight}
                         persistentMenuIsOnFirstScreen={persistentMenuIsOnFirstScreen}
