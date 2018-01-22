@@ -42,8 +42,12 @@ export interface ChatWindowProps {
   persistentMenuItems: Array<PeristentMenuItem>,
 }
 
+export interface ChatWindowDefaultProps {
+  persistentMenuItems: Array<PeristentMenuItem>
+}
+
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
-  static defaultProps = {
+  public static defaultProps: ChatWindowDefaultProps = {
     persistentMenuItems: []
   }
   private chatRef: any;

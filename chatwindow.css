@@ -829,3 +829,10 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   transition: transform 400ms ease-in-out, opacity 250ms ease-in-out;
 }
 
+.persistentMenuItem {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  border-top: 1px solid #eee;
+  cursor: pointer;
+}

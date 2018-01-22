@@ -11,6 +11,11 @@ export interface OpenPersistentMenuData {
     isFirstScreen: boolean
 }
 
+export interface PeristentMenuItem {
+    title: string,
+    onClick: () => void
+}
+
 interface ShellContainerProps {
     inputText: string,
     strings: Strings,
@@ -30,11 +35,6 @@ interface ShellContainerProps {
     persistentMenuIsOnFirstScreen: boolean,
     openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
     closePersistentMenu: () => void
-}
-
-export interface PeristentMenuItem {
-    title: string,
-    onClick: () => void
 }
 
 export interface ChatShellProps {
@@ -165,21 +165,11 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
 
         const firstScreenItemsToTake = showFirstScreenMore ? 2 : 3
         const firstScreenItems = persistentMenuItems.slice(0, firstScreenItemsToTake);
-
-        console.log({
-            persistentMenuItems,
-            showFirstScreenMore
-        })
         
         const secondScreenItems = persistentMenuItems.slice(3, 5);
 
         const persistMenuItemStyles = {
-            height: MENU_ITEM_HEIGHT, 
-            display: 'flex', 
-            alignItems: 'center', 
-            paddingLeft: 10,
-            borderTop: '1px solid #eee',
-            cursor: 'pointer'
+            height: MENU_ITEM_HEIGHT
         };
 
         const firstScreenStyles = {
@@ -201,6 +191,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                     style={firstScreenStyles}>
                 {firstScreenItems.map((item, index) =>
                     <div 
+                        className='persistentMenuItem'
                         key={index} 
                         onClick={item.onClick}
                         style={persistMenuItemStyles}>
@@ -209,6 +200,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 )}
                 {showFirstScreenMore &&
                     <div 
+                        className='persistentMenuItem'
                         onClick={this.onFirstScreenMoreClick}
                         style={{...persistMenuItemStyles, justifyContent: 'space-between'}}>
                         <span>More!</span> 
@@ -222,6 +214,7 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 className='persistentMenuScreen persistentMenuScreenTwo' 
                 style={secondScreenStyles}>
                 <div 
+                    className='persistentMenuItem'
                     onClick={this.onSecondScreenMoreClick}
                     style={{...persistMenuItemStyles, justifyContent: 'space-between', background: '#EDEDED'}}>
                     <div style={{height: 20, width: 20}}>
@@ -231,7 +224,9 @@ class PersistentMenu extends React.Component<PersistentMenuProps, PersistentMenu
                 </div>
                 {secondScreenItems.map((item, index) =>
                     <div 
+                        className='persistentMenuItem'
                         key={index} 
+                        onClick={item.onClick}
                         style={persistMenuItemStyles}>
                         {item.title}
                     </div>
@@ -531,7 +526,7 @@ export const AmbitShell = connect(
         // only used to create helper functions below
         sendMessage,
         sendFiles
-    }, (stateProps: any, dispatchProps: any, ownProps: any): Props => ({
+    }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
         persistentMenuItems: ownProps.persistentMenuItems,
         // from stateProps
         isPersistentMenuOpen: stateProps.isPersistentMenuOpen,
