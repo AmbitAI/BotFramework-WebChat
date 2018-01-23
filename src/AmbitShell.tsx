@@ -359,12 +359,15 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     }
     textWrapperClick = () => {
         setTimeout(() => {
-            this.textarea.focus();
+            this.focus();
         });
     }
     onChangeFile = (files: any) => {
         this.props.onSendFiles(this.fileInput.files);
         this.fileInput.value = null;
+    }
+    focus = () => {
+        this.textarea.focus();
     }
     render() {
         const { 
@@ -466,7 +469,10 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
 }
 
 class ShellContainer extends React.Component<ShellContainerProps, {}> {
-
+    private shell: any;
+    focusInput = () => {
+        this.shell.textarea.focus();
+    }
     render() {
         const { 
             showUpload,
@@ -488,6 +494,7 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
         return (
             <div style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
                 <ChatShell 
+                    ref={el => this.shell = el}
                     closePersistentMenu={closePersistentMenu}
                     isPersistentMenuOpen={isPersistentMenuOpen}
                     openPersistenceMenuScreen={openPersistenceMenuScreen}
@@ -556,5 +563,6 @@ export const AmbitShell = connect(
         shellPlaceholderText: ownProps.shellPlaceholderText,
         persistentMenuHeight: stateProps.persistentMenuHeight,
         persistentMenuIsOnFirstScreen: stateProps.persistentMenuIsOnFirstScreen
-    })
+    }),
+    {withRef: true}
 )(ShellContainer);
