@@ -77,7 +77,6 @@ export const sendFiles = (files: FileList, from: User, locale: string) => ({
 
 import { History } from './History';
 import { MessagePane } from './MessagePane';
-import { Shell } from './Shell';
 import { Header } from './Header';
 import { AmbitShell } from './AmbitShell';
 
