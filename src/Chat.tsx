@@ -95,6 +95,7 @@ export class Chat extends React.Component<ChatProps, State> {
     private selectedActivitySubscription: Subscription;
 
     private chatviewPanel: HTMLElement;
+    private shell: any;
     private resizeListener = () => this.setSize();
 
     constructor(props: ChatProps) {
@@ -216,7 +217,7 @@ export class Chat extends React.Component<ChatProps, State> {
     private setFocus() {
         // HUGE HACK - set focus back to input after clicking on an action
         // React makes this hard to do well, so we just do an end run around them
-        (this.chatviewPanel.querySelector(".wc-shellinput") as HTMLInputElement).focus();
+        this.shell.getWrappedInstance().focusInput();
     }
 
     render() {
@@ -252,6 +253,7 @@ export class Chat extends React.Component<ChatProps, State> {
                             setFocus={ () => this.setFocus() } />
                     </MessagePane>
                     <AmbitShell 
+                        ref={(el: any) => this.shell = el}
                         persistentMenuItems={this.props.persistentMenuItems}
                         shellPlaceholderText={this.props.shellPlaceholderText}
                         isPersistentMenuOpen={isPersistentMenuOpen}
