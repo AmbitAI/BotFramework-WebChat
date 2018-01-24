@@ -332,15 +332,16 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
         this.props.onSendMessage(
             this.props.message
         );
+        this.textarea.style.height = '17px';
+        this.props.onHeightChange(this.state.initialHeight);
     }
     textAreaKeydown = (e: any) => {
         if(e.keyCode === 13 && !e.shiftKey) {
             e.preventDefault();
-            this.sendMessage();
-    
-            this.textarea.style.height = '17px';
-    
-            this.props.onHeightChange(this.state.initialHeight);
+            const trimmedMessage = this.props.message.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
+            if(trimmedMessage) {
+                this.sendMessage();
+            }
         }
     }
     persistentMenuIconClick = () => {
