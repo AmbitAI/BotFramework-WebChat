@@ -289,6 +289,9 @@ export type HistoryAction = {
     type: 'Take_SuggestedAction',
     message: Message
 } | {
+    type: 'Take_QuickReply',
+    message: Message
+} | {
     type: 'Clear_Typing',
     id: string
 }| {
@@ -425,6 +428,19 @@ export const history: Reducer<HistoryState> = (
             const newActivity = {
                 ... activity,
                 suggestedActions: undefined
+            };
+            return {
+                ... state,
+                activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
+                selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
+            }
+
+        case 'Take_QuickReply':
+            const i = state.activities.findIndex(activity => activity === action.message);
+            const activity = state.activities[i];
+            const newActivity = {
+                ... activity,
+                channelData: undefined
             };
             return {
                 ... state,
