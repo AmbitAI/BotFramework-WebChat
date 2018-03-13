@@ -435,20 +435,17 @@ export const history: Reducer<HistoryState> = (
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             }
 
-        case 'Take_QuickReply':
+        case 'Take_QuickReply': {
             const i = state.activities.findIndex(activity => activity === action.message);
             const activity = state.activities[i];
-            const newActivity = {
-                ... activity,
-                channelData: undefined,
-                type: 'typing'
-            };
+            const { channelData, ...newActivity } = activity;
+            
             return {
                 ... state,
                 activities: copyArrayWithUpdatedItem(state.activities, i, newActivity),
                 selectedActivity: state.selectedActivity === activity ? newActivity : state.selectedActivity
             }
-
+        }
         case 'Clear_History':
           return {
             ...INITIAL_HISTORY_STATE

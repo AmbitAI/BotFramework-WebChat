@@ -68,7 +68,7 @@ class QuickReplies extends React.Component<MessagePaneProps, {}> {
                 nextSvgPathData="M 12.5 22 L 10 19.5 L 15.5 14 L 10 8.5 L 12.5 6 L 20.5 14 L 12.5 22 Z"
                 scrollUnit="page"
             >
-                <ul>{ this.props.activityWithQuickReplies.channelData.quick_replies.map((action, index) =>
+                <ul>{ this.props.activityWithQuickReplies.channelData.quick_replies.map((action: any, index: number) =>
                     <li key={ index }>
                     { action.content_type === 'location' && (
                         <button type="button" onClick={ e => this.actionClick(e, action) } title="Send Location">
