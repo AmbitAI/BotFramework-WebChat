@@ -440,7 +440,8 @@ export const history: Reducer<HistoryState> = (
             const activity = state.activities[i];
             const newActivity = {
                 ... activity,
-                channelData: undefined
+                channelData: undefined,
+                type: 'typing'
             };
             return {
                 ... state,

@@ -4,6 +4,7 @@ import { ChatActions, ChatState } from './Store';
 import { connect } from 'react-redux';
 import { HScroll } from './HScroll';
 import { konsole, classList, doCardAction, IDoCardAction, sendMessage } from './Chat';
+import * as request from 'superagent';
 
 export interface MessagePaneProps {
     activityWithSuggestedActions: Message,
@@ -39,19 +40,31 @@ class QuickReplies extends React.Component<MessagePaneProps, {}> {
         if (!this.props.activityWithQuickReplies) return;
         
         this.props.takeQuickReply(this.props.activityWithQuickReplies);
-        navigator.geolocation.getCurrentPosition(location => {
-            console.log(location.coords.latitude);
-            console.log(location.coords.longitude);
-            console.log(location.coords.accuracy);
-            this.props.doCardAction('postBack', `latlng=${location.coords.latitude},${location.coords.longitude}`);
-        });
+        if (navigator && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(location => {
+                console.log(location.coords.latitude);
+                console.log(location.coords.longitude);
+                console.log(location.coords.accuracy);
+                this.props.doCardAction('postBack', `latlng=${location.coords.latitude},${location.coords.longitude}`);
+            });
+        } else {
+            request
+            .get('https://ipinfo.io/json')
+            .end((err: any, res: any) => {
+                if (err) {
+                    console.log('Loading ip geolocation failed', err);
+                } else {
+                    this.props.doCardAction('postBack', `latlng=${res.body.loc}`);
+                }
+            });
+        }
         this.props.setFocus();
         e.stopPropagation();
     }
 
     render() {
         if (!this.props.activityWithQuickReplies) return null;
-
+        
         return (
             <HScroll
                 prevSvgPathData="M 16.5 22 L 19 19.5 L 13.5 14 L 19 8.5 L 16.5 6 L 8.5 14 L 16.5 22 Z" 
@@ -164,6 +177,6 @@ export const MessagePane = connect(
         children: ownProps.children,
         setFocus: ownProps.setFocus,
         // helper functions
-        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage),
+        doCardAction: doCardAction(stateProps.botConnection, stateProps.user, stateProps.locale, dispatchProps.sendMessage)
     })
 )(MessagePaneView);
