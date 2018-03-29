@@ -469,7 +469,7 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     }
 }
 
-class ShellContainer extends React.Component<ShellContainerProps, {}> {
+class ShellContainer extends React.Component<any, {}> {
     private shell: any;
     focusInput = () => {
         this.shell.textarea.focus();
