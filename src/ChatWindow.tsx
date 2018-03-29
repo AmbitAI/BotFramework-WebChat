@@ -46,6 +46,8 @@ export interface ChatWindowDefaultProps {
   persistentMenuItems: Array<PeristentMenuItem>
 }
 
+const iOSFixClassName = ' fix-body-while-chat-open-apple-ios';
+
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
   public static defaultProps: ChatWindowDefaultProps = {
     persistentMenuItems: []
@@ -53,6 +55,9 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
   private chatRef: any;
   constructor(props: ChatWindowProps) {
     super(props);
+    if(props.initiallyOpen) {
+      this.maybeAddIOSFix();
+    }
     this.state = {
       isMinimised: !props.initiallyOpen
     };
@@ -80,7 +85,16 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
   setRef = (ref: any) => { 
     this.chatRef = ref; 
   }
+  maybeAddIOSFix = () => {
+    const isIOS = navigator.userAgent.match(/iPhone|iPad|iPod/i);
+
+    if(isIOS) {
+      document.body.className = document.body.className + iOSFixClassName;
+    }
+  }
   open = () => {
+    this.maybeAddIOSFix();
+
     this.setState({
       isMinimised: false
     });
@@ -89,6 +103,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
     this.setState({
       isMinimised: true
     });
+    document.body.className = document.body.className.replace(iOSFixClassName, '');
   }  
   render() {
     const { isMinimised } = this.state;
