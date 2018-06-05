@@ -35,6 +35,8 @@ interface ShellContainerProps {
     persistentMenuIsOnFirstScreen: boolean,
     openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
     closePersistentMenu: () => void,
+    showGetStartedButton: boolean,
+    onGetStartedButtonClick: () => void
 }
 
 export interface ChatShellProps {
@@ -469,6 +471,20 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
     }
 }
 
+const GetStarted = (props: any) => (
+    <div
+        onClick={props.onClick} 
+        style={{
+            cursor: 'pointer', 
+            height: props.height, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center'
+        }}>
+        <span>Get Started</span>
+    </div>
+);
+
 class ShellContainer extends React.Component<ShellContainerProps, {}> {
     private shell: any;
     focusInput = () => {
@@ -489,27 +505,34 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
             persistentMenuIsOnFirstScreen,
             openPersistenceMenuScreen,
             isPersistentMenuOpen,
-            closePersistentMenu
+            closePersistentMenu,
+            showGetStartedButton,
+            onGetStartedButtonClick
         } = this.props;
 
         return (
             <div style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-                <ChatShell 
-                    ref={el => this.shell = el}
-                    closePersistentMenu={closePersistentMenu}
-                    isPersistentMenuOpen={isPersistentMenuOpen}
-                    openPersistenceMenuScreen={openPersistenceMenuScreen}
-                    persistentMenuHeight={persistentMenuHeight}
-                    persistentMenuIsOnFirstScreen={persistentMenuIsOnFirstScreen}
-                    shellPlaceholderText={shellPlaceholderText}
-                    onSendFiles={sendFiles}
-                    showUpload={showUpload}
-                    message={inputText}
-                    onSendMessage={sendMessage}
-                    onChangeMessage={onChangeText}
-                    persistentMenuItems={persistentMenuItems}
-                    onHeightChange={shellHeightChanged}
-                    height={shellHeight} />
+                {!showGetStartedButton &&
+                    <ChatShell 
+                        ref={el => this.shell = el}
+                        closePersistentMenu={closePersistentMenu}
+                        isPersistentMenuOpen={isPersistentMenuOpen}
+                        openPersistenceMenuScreen={openPersistenceMenuScreen}
+                        persistentMenuHeight={persistentMenuHeight}
+                        persistentMenuIsOnFirstScreen={persistentMenuIsOnFirstScreen}
+                        shellPlaceholderText={shellPlaceholderText}
+                        onSendFiles={sendFiles}
+                        showUpload={showUpload}
+                        message={inputText}
+                        onSendMessage={sendMessage}
+                        onChangeMessage={onChangeText}
+                        persistentMenuItems={persistentMenuItems}
+                        onHeightChange={shellHeightChanged}
+                        height={shellHeight} />            
+                }
+                {showGetStartedButton &&
+                    <GetStarted height={shellHeight} onClick={onGetStartedButtonClick} />
+                }
             </div>
         );
     }
@@ -543,6 +566,8 @@ export const AmbitShell = connect(
         sendMessage,
         sendFiles
     }, (stateProps: any, dispatchProps: any, ownProps: any) => ({
+        showGetStartedButton: ownProps.showGetStartedButton,
+        onGetStartedButtonClick: ownProps.onGetStartedButtonClick,
         persistentMenuItems: ownProps.persistentMenuItems,
         // from stateProps
         isPersistentMenuOpen: stateProps.isPersistentMenuOpen,

@@ -12,7 +12,8 @@ const MinimiseIcon = () => (
 );
 
 export interface State {
-  isMinimised: boolean
+  isMinimised: boolean,
+  showGetStartedButton: boolean
 }
 
 export interface User {
@@ -40,6 +41,7 @@ export interface ChatWindowProps {
   onMount?: any,
   shellPlaceholderText?: string,
   persistentMenuItems: Array<PeristentMenuItem>,
+  getStartedMessage: string
 }
 
 export interface ChatWindowDefaultProps {
@@ -54,7 +56,8 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
   constructor(props: ChatWindowProps) {
     super(props);
     this.state = {
-      isMinimised: !props.initiallyOpen
+      isMinimised: !props.initiallyOpen,
+      showGetStartedButton: Boolean(props.getStartedMessage)
     };
   }
   componentDidMount() {
@@ -90,8 +93,12 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       isMinimised: true
     });
   }  
+  handleGetStartedButtonClick = () => {
+    this.setState({showGetStartedButton: false});
+    this.sendMessage(this.props.getStartedMessage);
+  }
   render() {
-    const { isMinimised } = this.state;
+    const { isMinimised, showGetStartedButton } = this.state;
     const { 
       headerText, 
       avatar, 
@@ -104,7 +111,8 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       menuActions,
       disableUpload,
       shellPlaceholderText,
-      persistentMenuItems
+      persistentMenuItems,
+      getStartedMessage
     } = this.props;
     
     const customHeaderToolbox = (
@@ -138,6 +146,8 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
               user={user}
               avatar={avatar}
               headerText={headerText}       
+              showGetStartedButton={showGetStartedButton}
+              onGetStartedButtonClick={this.handleGetStartedButtonClick}
             />
           </div>
           {isMinimised &&

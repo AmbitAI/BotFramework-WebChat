@@ -43,7 +43,9 @@ export interface ChatProps {
     avatar?: string,
     disableUpload?: boolean,
     shellPlaceholderText?: string,
-    persistentMenuItems: Array<PeristentMenuItem>
+    persistentMenuItems: Array<PeristentMenuItem>,
+    showGetStartedButton: boolean,
+    onGetStartedButtonClick: () => void
 }
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
@@ -253,6 +255,8 @@ export class Chat extends React.Component<ChatProps, State> {
                             setFocus={ () => this.setFocus() } />
                     </MessagePane>
                     <AmbitShell 
+                        showGetStartedButton={this.props.showGetStartedButton}
+                        onGetStartedButtonClick={this.props.onGetStartedButtonClick}
                         ref={(el: any) => this.shell = el}
                         persistentMenuItems={this.props.persistentMenuItems}
                         shellPlaceholderText={this.props.shellPlaceholderText}
