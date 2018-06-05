@@ -41,7 +41,8 @@ export interface ChatWindowProps {
   onMount?: any,
   shellPlaceholderText?: string,
   persistentMenuItems: Array<PeristentMenuItem>,
-  getStartedMessage: string
+  getStartedMessage: string,
+  onMinimisedChanged?: (isMinimised: boolean) => void
 }
 
 export interface ChatWindowDefaultProps {
@@ -67,6 +68,12 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
         open: this.open,
         close: this.close
       });
+    }
+  }
+  componentDidUpdate(prevProps: ChatWindowProps, prevState: State) {
+    const { isMinimised } = this.state;
+    if(this.props.onMinimisedChanged && prevState.isMinimised !== isMinimised) {
+      this.props.onMinimisedChanged(isMinimised);
     }
   }
   sendMessage = (message: string) => {
