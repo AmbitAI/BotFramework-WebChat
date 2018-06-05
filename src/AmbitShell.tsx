@@ -474,12 +474,9 @@ class ChatShell extends React.Component<ChatShellProps, ChatShellState> {
 const GetStarted = (props: any) => (
     <div
         onClick={props.onClick} 
+        className='getStartedButton'
         style={{
-            cursor: 'pointer', 
-            height: props.height, 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center'
+            height: props.height
         }}>
         <span>Get Started</span>
     </div>

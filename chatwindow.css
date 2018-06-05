@@ -836,3 +836,10 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   border-top: 1px solid #eee;
   cursor: pointer;
 }
+
+.getStartedButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
