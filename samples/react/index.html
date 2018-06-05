@@ -43,7 +43,7 @@
 
       class ChatWindowWrapper extends React.Component {
         componentDidMount() {
-          this.ref.sendMessage('Hello');
+          // this.ref.sendMessage('Hello');
         }
         setRef = (ref) => {
           this.ref = ref;
@@ -70,7 +70,8 @@
             <div>
               <button onClick={this.open}>OPEN</button>
               <button onClick={this.close}>CLOSE</button>
-              <BotChat.ChatWindow 
+              <BotChat.ChatWindow
+                getStartedMessage={'Hello from get started'}
                 disableUpload={false}
                 ref={this.setRef}
                 menuActions={menuActions}
