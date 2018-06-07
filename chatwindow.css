@@ -653,6 +653,8 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
 .wc-message-bot-avatar {
   height: 40px;
   width: 40px;
+  min-width: 40px;  /* IE Fix */
+  background: red;
   margin-right: 15px;
   background: #fff;
   border-radius: 40px;
@@ -842,4 +844,5 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  background: #fff;
 }
