@@ -83,7 +83,8 @@ import { Header } from './Header';
 import { AmbitShell } from './AmbitShell';
 
 export interface State {
-    isPersistentMenuOpen: boolean
+    isPersistentMenuOpen: boolean,
+    online: boolean
 }
 
 export class Chat extends React.Component<ChatProps, State> {
@@ -122,7 +123,8 @@ export class Chat extends React.Component<ChatProps, State> {
         }
 
         this.state = {
-            isPersistentMenuOpen: false
+            isPersistentMenuOpen: false,
+            online: true
         };
     }
 
@@ -199,7 +201,14 @@ export class Chat extends React.Component<ChatProps, State> {
                 });
             });
         }
+
+        window.addEventListener('online', this.updateOnlineStatus);
+        window.addEventListener('offline', this.updateOnlineStatus);
     }
+
+    updateOnlineStatus = () => {
+        this.setState({ online: navigator.onLine });
+    };
 
     componentWillUnmount() {
         this.connectionStatusSubscription.unsubscribe();
@@ -209,6 +218,8 @@ export class Chat extends React.Component<ChatProps, State> {
         if (this.botConnection)
             this.botConnection.end();
         window.removeEventListener('resize', this.resizeListener);
+        window.removeEventListener('online', this.updateOnlineStatus);
+        window.removeEventListener('offline', this.updateOnlineStatus);
     }
 
     // At startup we do three render passes:
@@ -226,7 +237,7 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
 
-        const { isPersistentMenuOpen } = this.state;
+        const { isPersistentMenuOpen, online } = this.state;
 
         // only render real stuff after we know our dimensions
         let header: JSX.Element;
@@ -261,7 +272,8 @@ export class Chat extends React.Component<ChatProps, State> {
                         persistentMenuItems={this.props.persistentMenuItems}
                         shellPlaceholderText={this.props.shellPlaceholderText}
                         isPersistentMenuOpen={isPersistentMenuOpen}
-                        showUpload={!this.props.disableUpload} />                    
+                        showUpload={!this.props.disableUpload}
+                        online={online} />
                     { resize }
                 </div>
             </Provider>
