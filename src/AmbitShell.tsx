@@ -36,7 +36,8 @@ interface ShellContainerProps {
     openPersistenceMenuScreen: (data: OpenPersistentMenuData) => void,
     closePersistentMenu: () => void,
     showGetStartedButton: boolean,
-    onGetStartedButtonClick: () => void
+    onGetStartedButtonClick: () => void,
+    online: boolean
 }
 
 export interface ChatShellProps {
@@ -482,6 +483,17 @@ const GetStarted = (props: any) => (
     </div>
 );
 
+const Offline = (props: any) => (
+    <div
+        style={{
+            height: props.height,
+            lineHeight: `${props.height}px`,
+            textAlign: 'center'
+        }}>
+        {'Offline, reconnecting...'}
+    </div>
+);
+
 class ShellContainer extends React.Component<ShellContainerProps, {}> {
     private shell: any;
     focusInput = () => {
@@ -504,12 +516,13 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
             isPersistentMenuOpen,
             closePersistentMenu,
             showGetStartedButton,
-            onGetStartedButtonClick
+            onGetStartedButtonClick,
+            online
         } = this.props;
 
         return (
             <div style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-                {!showGetStartedButton &&
+                {(!showGetStartedButton && online) &&
                     <ChatShell 
                         ref={el => this.shell = el}
                         closePersistentMenu={closePersistentMenu}
@@ -525,11 +538,12 @@ class ShellContainer extends React.Component<ShellContainerProps, {}> {
                         onChangeMessage={onChangeText}
                         persistentMenuItems={persistentMenuItems}
                         onHeightChange={shellHeightChanged}
-                        height={shellHeight} />            
+                        height={shellHeight} />
                 }
-                {showGetStartedButton &&
+                {(showGetStartedButton && online) &&
                     <GetStarted height={shellHeight} onClick={onGetStartedButtonClick} />
                 }
+                {!online && <Offline height={shellHeight} />}
             </div>
         );
     }
@@ -566,6 +580,7 @@ export const AmbitShell = connect(
         showGetStartedButton: ownProps.showGetStartedButton,
         onGetStartedButtonClick: ownProps.onGetStartedButtonClick,
         persistentMenuItems: ownProps.persistentMenuItems,
+        online: ownProps.online,
         // from stateProps
         isPersistentMenuOpen: stateProps.isPersistentMenuOpen,
         shellHeight: stateProps.shellHeight,
