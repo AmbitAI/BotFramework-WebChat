@@ -1,6 +1,6 @@
 export { App, AppProps } from './App';
 export { Chat, ChatProps, FormatOptions } from './Chat';
-export * from 'botframework-directlinejs';
+export * from 'ambit-directlinejs';
 export { queryParams } from './Attachment';
 export { SpeechOptions } from './SpeechOptions'
 export { Speech } from './SpeechModule'

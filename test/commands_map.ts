@@ -1,5 +1,5 @@
 import * as server_content from './server_content';
-import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import * as dl from "../node_modules/ambit-directlinejs/built/directLine";
 import * as Nightmare from 'nightmare';
 import * as express from 'express';
 

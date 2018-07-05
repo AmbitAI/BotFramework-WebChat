@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Chat } from './Chat';
 import { Launcher } from './Launcher';
-import { DirectLineOptions } from 'botframework-directlinejs';
+import { DirectLineOptions } from 'ambit-directlinejs';
 import { sendMessage, MenuAction } from './Chat';
 import { PeristentMenuItem } from './AmbitShell';
 

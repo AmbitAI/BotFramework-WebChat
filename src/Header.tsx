@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { ChatActions, ChatState, FormatState } from './Store';
-import { User } from 'botframework-directlinejs';
+import { User } from 'ambit-directlinejs';
 import { Dispatch, connect } from 'react-redux';
 import { Strings } from './Strings';
 import { sendMessage, MenuAction } from './Chat';

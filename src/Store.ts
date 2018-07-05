@@ -1,4 +1,4 @@
-import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'botframework-directlinejs';
+import { Activity, IBotConnection, User, ConnectionStatus, Message } from 'ambit-directlinejs';
 import { FormatOptions, ActivityOrID, konsole, sendMessage as sendChatMessage } from './Chat';
 import { strings, defaultStrings, Strings } from './Strings';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
