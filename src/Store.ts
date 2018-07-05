@@ -273,13 +273,13 @@ export interface HistoryState {
 }
 
 export type HistoryAction = {
-    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message' | 'Send_Geolocation'
+    type: 'Receive_Message' | 'Send_Message' | 'Show_Typing' | 'Receive_Sent_Message' | 'Send_Geolocation' | 'Send_User_Data'
     activity: Activity
 } | {
-    type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry' | 'Send_Geolocation_Fail',
+    type: 'Send_Message_Try' | 'Send_Message_Fail' | 'Send_Message_Retry' | 'Send_Geolocation_Fail' | 'Send_User_Data_Fail',
     clientActivityId: string
 } | {
-    type: 'Send_Message_Succeed' | 'Send_Geolocation_Succeed'
+    type: 'Send_Message_Succeed' | 'Send_Geolocation_Succeed' | 'Send_User_Data_Succeed'
     clientActivityId: string
     id: string
 } | {
@@ -527,6 +527,21 @@ const sendGeolocation: Epic<ChatActions, ChatState> = (action$, store) =>
         .catch(error => Observable.of({ type: 'Send_Geolocation_Fail', clientActivityId: 'geolocation' } as HistoryAction))
     });
 
+const sendUserData: Epic<ChatActions, ChatState> = (action$, store) =>
+    action$.ofType('Send_User_Data')
+        .flatMap(action => {
+            const state = store.getState();
+            const activity = action.activity;
+            if (!activity) {
+                konsole.log("trySendMessage: activity not found");
+                return Observable.empty<HistoryAction>();
+            }
+
+            return state.connection.botConnection.postActivity(activity)
+                .map(id => ({ type: 'Send_User_Data_Succeed', clientActivityId: 'userData', id } as HistoryAction))
+                .catch(error => Observable.of({ type: 'Send_User_Data_Fail', clientActivityId: 'userData' } as HistoryAction))
+        });
+
 const sendMessage: Epic<ChatActions, ChatState> = (action$, store) =>
     action$.ofType('Send_Message')
     .map(action => {
@@ -686,6 +701,7 @@ export const createStore = () =>
         }),
         applyMiddleware(createEpicMiddleware(combineEpics(
             sendGeolocation,
+            sendUserData,
             updateSelectedActivity,
             sendMessage,
             trySendMessage,
