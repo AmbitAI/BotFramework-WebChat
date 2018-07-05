@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Chat } from './Chat';
+import {Chat, sendUserData} from './Chat';
 import { Launcher } from './Launcher';
 import { DirectLineOptions } from 'botframework-directlinejs';
 import { sendMessage, MenuAction } from './Chat';
@@ -52,8 +52,10 @@ export interface ChatWindowDefaultProps {
 export class ChatWindow extends React.Component<ChatWindowProps, State> {
   public static defaultProps: ChatWindowDefaultProps = {
     persistentMenuItems: []
-  }
+  };
+
   private chatRef: any;
+
   constructor(props: ChatWindowProps) {
     super(props);
     this.state = {
@@ -61,21 +63,25 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       showGetStartedButton: Boolean(props.getStartedMessage)
     };
   }
+
   componentDidMount() {
-    if(this.props.onMount) {
+    if (this.props.onMount) {
       this.props.onMount({
         sendMessage: this.sendMessage,
         open: this.open,
-        close: this.close
+        close: this.close,
+        sendUserData: this.sendUserData
       });
     }
   }
+
   componentDidUpdate(prevProps: ChatWindowProps, prevState: State) {
     const { isMinimised } = this.state;
     if(this.props.onMinimisedChanged && prevState.isMinimised !== isMinimised) {
       this.props.onMinimisedChanged(isMinimised);
     }
   }
+
   sendMessage = (message: string) => {
     const { dispatch, getState } = this.chatRef.store;
     const state = getState();
@@ -86,7 +92,17 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
     dispatch(
       sendMessage(message, user, locale)
     );
-  }
+  };
+
+  sendUserData = (data: any) => {
+      const { dispatch, getState } = this.chatRef.store;
+      const state = getState();
+
+      const user = state.connection.user;
+
+      dispatch(sendUserData(data, user));
+  };
+
   setRef = (ref: any) => { 
     this.chatRef = ref; 
   }
@@ -99,7 +115,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
     this.setState({
       isMinimised: true
     });
-  }  
+  }
   handleGetStartedButtonClick = () => {
     this.setState({showGetStartedButton: false});
     this.sendMessage(this.props.getStartedMessage);
@@ -118,8 +134,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
       menuActions,
       disableUpload,
       shellPlaceholderText,
-      persistentMenuItems,
-      getStartedMessage
+      persistentMenuItems
     } = this.props;
     
     const customHeaderToolbox = (
@@ -158,7 +173,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
             />
           </div>
           {isMinimised &&
-            <Launcher 
+            <Launcher
               tooltipImage={tooltipImage}
               tooltipText={tooltipText}
               onLaunch={this.open} />

@@ -68,6 +68,16 @@ export const sendGeolocation = (name: string, value: any, from: User) => ({
         from
     }} as ChatActions);
 
+export const sendUserData = (data: any, from: User) => ({
+   type: 'Send_User_Data',
+   activity: {
+       type: "event",
+       name: "userData",
+       from,
+       data
+   }
+});
+
 export const sendFiles = (files: FileList, from: User, locale: string) => ({
     type: 'Send_Message',
     activity: {
