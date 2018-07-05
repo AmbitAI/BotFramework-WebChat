@@ -1,4 +1,4 @@
-import * as dl from "../node_modules/botframework-directlinejs/built/directLine";
+import * as dl from "../node_modules/ambit-directlinejs/built/directLine";
 export const config = require('./mock_dl/server_config.json') as { bot: dl.User, port: number, widthTests: { [id: string]: number } };
 const asset_url = "http://localhost:" + config.port + "/assets/";
 const bot = config.bot;

@@ -2,7 +2,7 @@
     "include": [
         "commands_map.ts",
         "server_content.ts",
-        "../node_modules/botframework-directlinejs/built/directLine.d.ts"
+        "../node_modules/ambit-directlinejs/built/directLine.d.ts"
     ],
     "exclude": [
         "../node_modules/@types/react-redux/index.d.ts"
