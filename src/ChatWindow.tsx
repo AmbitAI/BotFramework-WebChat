@@ -86,6 +86,11 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
     const { dispatch, getState } = this.chatRef.store;
     const state = getState();
 
+    if(!state.connection.botConnection) {
+      console.warn('Chat must have been opened before sendMessage is called');
+      return;
+    }
+
     const locale = state.format.locale;
     const user = state.connection.user;
 
@@ -156,6 +161,7 @@ export class ChatWindow extends React.Component<ChatWindowProps, State> {
         <div className='widget-container'>
           <div className={conversationContainerClassName}>   
             <Chat 
+              isOpen={!isMinimised}
               persistentMenuItems={persistentMenuItems}
               shellPlaceholderText={shellPlaceholderText}
               sendTyping={true}
