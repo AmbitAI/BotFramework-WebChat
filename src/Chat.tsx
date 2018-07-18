@@ -45,7 +45,8 @@ export interface ChatProps {
     shellPlaceholderText?: string,
     persistentMenuItems: Array<PeristentMenuItem>,
     showGetStartedButton: boolean,
-    onGetStartedButtonClick: () => void
+    onGetStartedButtonClick: () => void,
+    isOpen: boolean
 }
 
 export const sendMessage = (text: string, from: User, locale: string) => ({
@@ -93,7 +94,6 @@ import { Header } from './Header';
 import { AmbitShell } from './AmbitShell';
 
 export interface State {
-    isPersistentMenuOpen: boolean,
     online: boolean
 }
 
@@ -133,9 +133,14 @@ export class Chat extends React.Component<ChatProps, State> {
         }
 
         this.state = {
-            isPersistentMenuOpen: false,
             online: true
         };
+    }
+
+    componentWillReceiveProps(nextProps: ChatProps) {
+        if(nextProps.isOpen && !this.botConnection) {
+            this.startConnection();
+        }
     }
 
     private handleIncomingActivity(activity: Activity) {
@@ -160,21 +165,10 @@ export class Chat extends React.Component<ChatProps, State> {
         });
     }
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.setState({isPersistentMenuOpen: true});
-        }, 1000);
-        
-        // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
-        this.setSize();
-
+    startConnection = () => {
         const botConnection = this.props.directLine
             ? (this.botConnection = new DirectLine(this.props.directLine))
-            : this.props.botConnection
-            ;
-
-        if (this.props.resize === 'window')
-            window.addEventListener('resize', this.resizeListener);
+            : this.props.botConnection;
 
         this.store.dispatch<ChatActions>({ type: 'Start_Connection', user: this.props.user, bot: this.props.bot, botConnection, selectedActivity: this.props.selectedActivity });
 
@@ -202,6 +196,18 @@ export class Chat extends React.Component<ChatProps, State> {
             activity => this.handleIncomingActivity(activity),
             error => konsole.log("activity$ error", error)
         );
+    }
+
+    componentDidMount() {        
+        // Now that we're mounted, we know our dimensions. Put them in the store (this will force a re-render)
+        this.setSize();
+
+        if (this.props.isOpen) {
+            this.startConnection();
+        }
+
+        if (this.props.resize === 'window')
+            window.addEventListener('resize', this.resizeListener);
 
         if (this.props.selectedActivity) {
             this.selectedActivitySubscription = this.props.selectedActivity.subscribe(activityOrID => {
@@ -247,7 +253,7 @@ export class Chat extends React.Component<ChatProps, State> {
         const state = this.store.getState();
         konsole.log("BotChat.Chat state", state);
 
-        const { isPersistentMenuOpen, online } = this.state;
+        const { online } = this.state;
 
         // only render real stuff after we know our dimensions
         let header: JSX.Element;
@@ -261,17 +267,12 @@ export class Chat extends React.Component<ChatProps, State> {
         if (this.props.resize === 'detect') resize =
             <ResizeDetector onresize={ this.resizeListener } />;
 
-        const panelClassName = isPersistentMenuOpen ? 
-            "wc-chatview-panel persistent-menu-open" :
-            "wc-chatview-panel";
-
         return (
             <Provider store={ this.store }>
-                <div className={panelClassName} ref={ div => this.chatviewPanel = div }>
+                <div className='wc-chatview-panel' ref={ div => this.chatviewPanel = div }>
                     { header }
                     <MessagePane setFocus={ () => this.setFocus() }>
                         <History 
-                            isPersistentMenuOpen={isPersistentMenuOpen}
                             avatar={this.props.avatar} 
                             setFocus={ () => this.setFocus() } />
                     </MessagePane>
@@ -281,7 +282,6 @@ export class Chat extends React.Component<ChatProps, State> {
                         ref={(el: any) => this.shell = el}
                         persistentMenuItems={this.props.persistentMenuItems}
                         shellPlaceholderText={this.props.shellPlaceholderText}
-                        isPersistentMenuOpen={isPersistentMenuOpen}
                         showUpload={!this.props.disableUpload}
                         online={online} />
                     { resize }
