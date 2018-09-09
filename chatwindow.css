@@ -99,14 +99,12 @@ body .wc-app, .wc-app button, .wc-app input, .wc-app textarea {
   transition: height 0.2s cubic-bezier(0, 0, 0.5, 1); }
   .wc-suggested-actions .wc-hscroll > ul {
     margin: 0;
-    border-left: 5px solid #dbdee1;
-    border-right: 5px solid #dbdee1;
     height: 40px;
     padding: 2px 20px; }
     .wc-suggested-actions .wc-hscroll > ul > li {
       display: inline-block;
       margin: 2px;
-      max-width: 40%; }
+    }
       .wc-suggested-actions .wc-hscroll > ul > li button {
         background-color: #fff;
         color: #3a96dd;
